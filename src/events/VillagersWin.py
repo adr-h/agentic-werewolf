@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from GameState import GameState
 from events.Event import Event, EventView
-
+from phases.GameOverPhase import GameOverPhase
 
 @dataclass
 class VillagersWinEvent(Event):
@@ -11,5 +11,5 @@ class VillagersWinEvent(Event):
       return EventView(description=f"Werewolves have been wiped out - the villagers win!")
 
    def apply(self, state: GameState):
-      state.phase = 'game_over'
+      state.phase = GameOverPhase()
       state.winners = 'villagers'

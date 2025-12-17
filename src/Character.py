@@ -5,7 +5,6 @@ import string
 from typing import Callable, Literal
 
 from GameState import GameView
-from Protection import ProtectionStatus
 from Role import Role, RoleView
 from actions.Action import Action
 from player.Player import Player
@@ -24,16 +23,14 @@ class Character:
    name: str
    role: Role
    state: CharacterState
-   protection: ProtectionStatus
 
    last_turn_timestamp: datetime
 
-   def __init__(self, name: str, role: Role, state: CharacterState, player_id: str, protection: ProtectionStatus):
+   def __init__(self, name: str, role: Role, state: CharacterState, player_id: str):
       self.id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
       self.name = name
       self.role = role
       self.state = state
-      self.protection = protection
       self.player_id = player_id
 
    def get_view(self, observer: "Character"):

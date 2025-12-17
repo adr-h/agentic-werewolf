@@ -27,3 +27,6 @@ class AgenticPlayer(Player):
 
       # TODO: get an option via AI
       return possible_actions[0]
+
+   async def send_chat(self, message: str):
+      raise NotImplementedError("TODO")

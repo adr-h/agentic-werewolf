@@ -5,18 +5,19 @@ from Character import Character
 from GameState import GameState, Turn
 from WinConditions import get_win_result
 from actions.Action import Action
-from actions.Vote import VoteAction
+from phases.Voting.actions.Vote import VoteAction
 from events.Event import Event
 from events.VillagersWin import VillagersWinEvent
 from events.WerewolvesWin import WerewolvesWinEvent
-from phases.Phase import Phase
-from phases.Voting.ExecuteCharacterEvent import ExecuteCharacterEvent
-from phases.Voting.NoExecutionEvent import NoExecutionEvent
-from phases.Voting.VotingEndsEvent import VotingEndsEvent
+from phases.Hunting.HuntingPhase import HuntingPhase
+from phases.Phase import PhaseContract
+from phases.Voting.events.ExecuteCharacterEvent import ExecuteCharacterEvent
+from phases.Voting.events.NoExecutionEvent import NoExecutionEvent
+from phases.Voting.events.VotingEndsEvent import VotingEndsEvent
 
 from ..TimeOfDay import TimeOfDay
 
-class VotingPhase(Phase):
+class VotingPhase(PhaseContract):
    type = Literal["voting"]
    time = TimeOfDay.morning
 
@@ -35,20 +36,9 @@ class VotingPhase(Phase):
 
       state.apply_event(VotingEndsEvent())
 
+      return HuntingPhase()
+
    async def _collect_votes(self, state: GameState):
-      living_characters = [
-         c for c in state.characters if c.state != "dead"
-      ]
-
-      for char in living_characters:
-         player = state.get_player_by_character(char.player_id)
-
-         # inform all players of their possible options
-         player.receive_possible_actions(
-            self.get_possible_actions(state, char)
-         )
-
-      # give all players time to make their decisions; check every 5 secs
       timeout = 30
       interval = 5
       while timeout > 0:

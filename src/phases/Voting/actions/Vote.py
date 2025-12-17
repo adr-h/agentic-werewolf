@@ -11,7 +11,6 @@ from datetime import datetime
 class VoteAction(Action):
    targetId: str | None
    name: str = "Vote for Execution"
-   timestamp: datetime = field(default_factory=datetime.now)
 
    def resolve(self, gameState: GameState):
       # TODO: abstraining from voting should be its own action!

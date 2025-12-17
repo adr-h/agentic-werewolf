@@ -13,5 +13,4 @@ class VotingEndsEvent(Event):
 
    def apply(self, state: GameState):
       state.votes.clear()
-      state.phase = 'hunting'
 

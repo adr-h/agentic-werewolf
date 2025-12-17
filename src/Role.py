@@ -13,6 +13,7 @@ class RoleView():
 class NormalVillagerRole():
    name = "Normal Villager"
    can_kill = False # TODO: a trait system so this can scale
+   can_protect = False
    faction: Faction = "villagers"
 
    def get_view(self, observer: Character):
@@ -24,6 +25,7 @@ class NormalVillagerRole():
 class WerewolfRole():
    name = "Werewolf"
    can_kill = True # TODO: a trait system so this can scale
+   can_protect = False
    faction: Faction = "werewolves"
 
    def get_view(self, observer: Character):

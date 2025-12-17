@@ -9,8 +9,6 @@ from events.Event import Event, EventView
 @dataclass
 class ChatAction(Action):
    name = "Chat",
-   timestamp: datetime
-   targetId: str | None
    message: str
 
    def resolve(self, gameState: GameState):

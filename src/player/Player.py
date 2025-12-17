@@ -11,10 +11,15 @@ type ChatSender = Callable[[str], bool]
 
 # Player = AgenticPlayer | ManualPlayer
 class Player(ABC):
+   id: str
+
    def get_public_view(self) -> GameView:
       raise NotImplementedError("TODO")
 
    def receive_possible_actions(self, actions: Sequence[Action]):
+      raise NotImplementedError("TODO")
+
+   async def send_chat(self, message: str):
       raise NotImplementedError("TODO")
 
    async def send_action(self, action: Action):
