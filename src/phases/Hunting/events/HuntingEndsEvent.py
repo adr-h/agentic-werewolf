@@ -14,3 +14,5 @@ class HuntingEndsEvent(Event):
    def apply(self, state: GameState):
       state.hunting.clear()
       state.protection.clear()
+      state.autopsy.clear()
+      state.investigations.clear()

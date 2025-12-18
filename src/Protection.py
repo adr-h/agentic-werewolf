@@ -15,6 +15,14 @@ class ProtectionBag:
    def clear(self):
       self.protection_relationships = {}
 
+   def has_already_protected(self, actor_id: str) -> bool:
+      existing_protection_relationship = self.protection_relationships.get(actor_id, None)
+      if existing_protection_relationship is None:
+         return True
+      else:
+         return False
+
+
    def is_protected(self, target_id: str) -> bool:
       return next(
          (

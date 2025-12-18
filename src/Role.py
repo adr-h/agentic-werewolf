@@ -12,11 +12,15 @@ class RoleView():
 
 class NormalVillagerRole():
    name = "Normal Villager"
+
    can_kill = False # TODO: a trait system so this can scale
-   can_protect = False
+   can_protect = False # TODO: a trait system so this can scale
+   can_use_foresight = False # TODO: a trait system so this can scale
+   can_perform_autopsy = False # TODO: a trait system so this can scale
+
    faction: Faction = "villagers"
 
-   def get_view(self, observer: Character):
+   def get_view(self, observer: Character, observed: Character):
       return RoleView(
          name = "Normal Villager",
          faction = "villagers"
@@ -25,12 +29,14 @@ class NormalVillagerRole():
 class WerewolfRole():
    name = "Werewolf"
    can_kill = True # TODO: a trait system so this can scale
-   can_protect = False
+   can_protect = False # TODO: a trait system so this can scale
+   can_use_foresight = False # TODO: a trait system so this can scale
+   can_perform_autopsy = False # TODO: a trait system so this can scale
+
    faction: Faction = "werewolves"
 
-   def get_view(self, observer: Character):
-      # TODO: some kind of "observer memory" system, so that special classes like Seer that has inspected this char can "remember" that a werewolf is a werewolf
-      if (observer.role.faction == "werewolves"):
+   def get_view(self, observer: Character, observed: Character):
+      if (observer.role.faction == "werewolves" or observer.observed.get(observed.id, False)):
          return RoleView(
             name = "Werewolf",
             faction = "werewolves"
@@ -45,23 +51,51 @@ class Bodyguard(NormalVillagerRole):
    name = "Bodyguard"
    can_protect = True # TODO: a trait system so this can scale
 
-   def get_view(self, observer: Character):
+   def get_view(self, observer: Character, observed: Character):
+      if (observer.observed.get(observed.id, False)):
+         return RoleView(
+            name = "Bodyguard",
+            faction = "villagers"
+         )
+
       return RoleView(
          name = "Normal Villager",
          faction = "villagers"
       )
 
-class Seer(NormalVillagerRole):
-   name = "Seer"
+class Detective(NormalVillagerRole):
+   name = "Detective"
    can_use_foresight = True # TODO: a trait system so this can scale
 
-   def get_view(self, observer: Character):
+   def get_view(self, observer: Character, observed: Character):
+      if (observer.observed.get(observed.id, False)):
+         return RoleView(
+            name = "Detective",
+            faction = "villagers"
+         )
+
       return RoleView(
          name = "Normal Villager",
          faction = "villagers"
       )
 
-Role = NormalVillagerRole | WerewolfRole | Bodyguard | Seer
+class Doctor(NormalVillagerRole):
+   name = "Doctor"
+   can_perform_autopsy = True
+
+   def get_view(self, observer: Character, observed: Character):
+      if (observer.observed.get(observed.id, False)):
+         return RoleView(
+            name = "Doctor",
+            faction = "villagers"
+         )
+
+      return RoleView(
+         name = "Normal Villager",
+         faction = "villagers"
+      )
+
+Role = NormalVillagerRole | WerewolfRole | Bodyguard | Doctor | Detective
 
 # carl: Role = Bodyguard()
 

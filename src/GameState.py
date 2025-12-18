@@ -1,7 +1,9 @@
 
 from dataclasses import dataclass
+from Autopsy import AutopsyBag
 from Character import Character, CharacterView
 from Hunt import HuntingBag
+from Investigation import InvestigationBag
 from Protection import ProtectionBag
 from Role import Faction
 from events.Event import Event, EventView
@@ -27,6 +29,8 @@ class GameState:
    votes: VoteBag
    hunting: HuntingBag
    protection: ProtectionBag
+   autopsy: AutopsyBag
+   investigations: InvestigationBag
 
    events: list[Event]
 

@@ -67,6 +67,11 @@ class HuntingPhase(PhaseContract):
          if character.state == "alive"
       ]
 
+      dead_characters = [
+         character for character in state.characters
+         if character.state == "dead"
+      ]
+
       if actor.role.can_kill:
          return [
             HuntAction(
@@ -77,7 +82,7 @@ class HuntingPhase(PhaseContract):
             for char in living_characters
          ]
 
-      if actor.role.can_protect:
+      if actor.role.can_protect and not state.protection.has_already_protected(actor.id):
          return [
             ProtectAction(
                name = f"Protect {char.name}",
@@ -86,5 +91,16 @@ class HuntingPhase(PhaseContract):
             )
             for char in living_characters
          ]
+
+      if actor.role.can_perform_autopsy and not state.autopsy.has_already_performed_autopsy(actor.id):
+         return [
+            ProtectAction(
+               name = f"Perform autopsy on {char.name}",
+               targetId = char.id,
+               actorId = actor.id
+            )
+            for char in dead_characters
+         ]
+
 
       return []
