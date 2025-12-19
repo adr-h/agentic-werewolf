@@ -1,0 +1,47 @@
+
+
+from GameState import GameState
+from events.Event import Event
+from player.Player import Player
+
+
+class GameEngine:
+   players: list[Player]
+   game_state: GameState
+
+   def __init__(self):
+      # self.game_state = GameState()
+      self.game_state.subscribe(self.on_update)
+
+   async def game_loop(self):
+      game_state = self.game_state
+
+      while True:
+         current_phase = game_state.phase
+
+         await current_phase.run(state = game_state)
+
+         next_phase = await current_phase.next(game_state)
+         if next_phase is None:
+            break
+
+         game_state.phase = next_phase
+
+
+   def on_update(self, game_state: GameState, latest_event: Event | None):
+      self.alert_all_players(
+         game_state=game_state,
+         event=latest_event
+      )
+
+   def alert_player(self, game_state: GameState, player: Player, event: None | Event):
+      character = game_state.get_character(player.character_id)
+      player.receive_update(
+         game_view=game_state.get_view(character),
+         actions=game_state.phase.get_possible_actions( state=game_state, actor=character),
+         latest_event=event.get_view(state=self.game_state, observer=character) if event else None
+      )
+
+   def alert_all_players(self, game_state: GameState, event: None | Event):
+      for p in self.players:
+         self.alert_player(game_state, p, event)

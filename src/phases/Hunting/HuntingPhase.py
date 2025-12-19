@@ -32,7 +32,7 @@ class HuntingPhase(PhaseContract):
          await asyncio.sleep(interval)
 
    async def _resolve_hunting(self, state: GameState):
-      target_id = state.hunting.get_hunted()
+      target_id = state.hunts.get_hunted()
       if (target_id is None):
          state.apply_event(PeacefulNightEvent())
          return

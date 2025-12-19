@@ -3,6 +3,7 @@ from typing import Callable, Sequence
 
 from GameState import GameView
 from actions.Action import Action
+from events.Event import Event, EventView
 from .AgenticPlayer import AgenticPlayer
 from .ManualPlayer import ManualPlayer
 
@@ -12,11 +13,12 @@ type ChatSender = Callable[[str], bool]
 # Player = AgenticPlayer | ManualPlayer
 class Player(ABC):
    id: str
+   character_id: str
 
    def get_public_view(self) -> GameView:
       raise NotImplementedError("TODO")
 
-   def receive_possible_actions(self, actions: Sequence[Action]):
+   def receive_update(self, game_view: GameView, actions: Sequence[Action], latest_event: None | EventView):
       raise NotImplementedError("TODO")
 
    async def send_chat(self, message: str):

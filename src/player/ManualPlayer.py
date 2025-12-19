@@ -19,13 +19,13 @@ class ManualPlayer(Player):
       self.id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
       self.name = name
 
-   async def decide_action(self, prompt: str, game_view: GameView, get_actions: ActionsGetter) -> Action:
-      possible_actions = get_actions()
+   # async def decide_action(self, prompt: str, game_view: GameView, get_actions: ActionsGetter) -> Action:
+   #    possible_actions = get_actions()
 
-      # TODO: get an option from the player
-      await asyncio.sleep(5)
-      chosen_action = possible_actions[0]
-      return chosen_action
+   #    # TODO: get an option from the player
+   #    await asyncio.sleep(5)
+   #    chosen_action = possible_actions[0]
+   #    return chosen_action
 
    async def send_chat(self, message: str):
       raise NotImplementedError("TODO")

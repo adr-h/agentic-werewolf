@@ -18,7 +18,6 @@ class CharacterView:
 
 class Character:
    id: str
-   player_id: str
 
    name: str
    role: Role

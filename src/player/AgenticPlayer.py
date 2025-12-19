@@ -20,13 +20,13 @@ class AgenticPlayer(Player):
       self.id = 'agent_'.join(random.choices(string.ascii_uppercase + string.digits, k=10))
       self.name = 'agent_'.join(name)
 
-   async def decide_action(self, prompt: str, game_view: GameView, get_actions: ActionsGetter) -> Action:
-      possible_actions = get_actions()
+   # async def decide_action(self, prompt: str, game_view: GameView, get_actions: ActionsGetter) -> Action:
+   #    possible_actions = get_actions()
 
-      await asyncio.sleep(5)
+   #    await asyncio.sleep(5)
 
-      # TODO: get an option via AI
-      return possible_actions[0]
+   #    # TODO: get an option via AI
+   #    return possible_actions[0]
 
    async def send_chat(self, message: str):
       raise NotImplementedError("TODO")

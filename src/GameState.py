@@ -9,7 +9,7 @@ from Role import Faction
 from events.Event import Event, EventView
 from phases.Phase import PhaseType, Phase
 from player.Player import Player
-from typing import Dict, Literal
+from typing import Dict, Literal, Callable, Sequence
 from Vote import VoteBag, VoteBagView
 
 @dataclass
@@ -21,13 +21,14 @@ class GameView:
    is_chat_open: bool
 
 
+Subscriber = Callable[["GameState", Event | None]]
+
 @dataclass
 class GameState:
-   players: list[Player]
    characters: list[Character]
 
    votes: VoteBag
-   hunting: HuntingBag
+   hunts: HuntingBag
    protection: ProtectionBag
    autopsy: AutopsyBag
    investigations: InvestigationBag
@@ -37,16 +38,18 @@ class GameState:
    phase: Phase
    winners: Faction | None
 
+   subscribers: list[Subscriber]
    is_chat_open: bool
 
-   # def __init__(self, players: list[Player], characters: list[Character], phase: PhaseType):
-   #    self.players = players
-   #    self.characters = characters
-   #    self.phase = phase
+   def subscribe(self, subscriber: Subscriber):
+      self.subscribers.append(subscriber)
 
    def apply_event(self, event: Event):
       self.events.append(event)
       event.apply(self)
+
+      for notify in self.subscribers:
+         notify(self, event)
 
    def get_view(self, observer: Character)-> GameView:
       return GameView(
@@ -63,12 +66,3 @@ class GameState:
          raise Exception("Unable to find character with this ID! Debug.")
 
       return character
-
-   def get_player_by_character(self, character_id: str) -> Player:
-      character = self.get_character(character_id)
-
-      player = next(p for p in self.players if p.id == character.player_id)
-      if not player:
-         raise Exception("Unable to find player with this ID! Deb ug.")
-
-      return player

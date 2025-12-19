@@ -39,7 +39,7 @@ class MarkedForHuntEvent(Event):
 
 
    def apply(self, state: GameState):
-      state.hunting.add_hunting(Hunting(
+      state.hunts.add_hunting(Hunting(
          hunter_id = self.actorId,
          prey_id = self.targetId,
       ))

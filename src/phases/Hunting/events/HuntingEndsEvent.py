@@ -12,7 +12,7 @@ class HuntingEndsEvent(Event):
       return EventView(description=f"Night is coming to an end. The sun rises. Time to discuss the night's events.")
 
    def apply(self, state: GameState):
-      state.hunting.clear()
+      state.hunts.clear()
       state.protection.clear()
       state.autopsy.clear()
       state.investigations.clear()
