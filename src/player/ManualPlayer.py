@@ -15,8 +15,9 @@ class ManualPlayer(Player):
    name: str
    type: Literal["manual_player"] = "manual_player"
 
-   def __init__(self, name: str):
+   def __init__(self, name: str, character_id: str):
       self.id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+      self.character_id=character_id
       self.name = name
 
    # async def decide_action(self, prompt: str, game_view: GameView, get_actions: ActionsGetter) -> Action:

@@ -26,12 +26,11 @@ class Character:
    last_turn_timestamp: datetime
    observed: dict[str, bool] = {}
 
-   def __init__(self, name: str, role: Role, state: CharacterState, player_id: str):
+   def __init__(self, name: str, role: Role, state: CharacterState):
       self.id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
       self.name = name
       self.role = role
       self.state = state
-      self.player_id = player_id
 
    def get_view(self, observer: "Character"):
       return CharacterView(

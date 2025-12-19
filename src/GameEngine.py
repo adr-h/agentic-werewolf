@@ -9,8 +9,9 @@ class GameEngine:
    players: list[Player]
    game_state: GameState
 
-   def __init__(self):
-      # self.game_state = GameState()
+   def __init__(self, players: list[Player], game_state: GameState):
+      self.players = players
+      self.game_state=game_state
       self.game_state.subscribe(self.on_update)
 
    async def game_loop(self):
