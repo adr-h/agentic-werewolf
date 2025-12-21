@@ -12,19 +12,19 @@ from phases.PhaseContract import PhaseContract
 from ..TimeOfDay import TimeOfDay
 
 class DiscussionPhase(PhaseContract):
-   type = Literal["discussion"]
+   type = "discussion"
    time = TimeOfDay.morning
 
    async def run(self, state: GameState):
       state.apply_event(ChatOpenedEvent())
 
       # give all players time to make their decisions; check every 5 secs
-      timeout = 60
-      interval = 20
+      timeout = 30
+      interval = 10
 
       while timeout > 0:
-         timeout -= interval
          state.apply_event(ChatReminderEvent(time_left=timeout))
+         timeout -= interval
          await asyncio.sleep(interval)
 
    async def next(self, state: GameState):

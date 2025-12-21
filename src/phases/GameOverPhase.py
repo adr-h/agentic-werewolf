@@ -5,7 +5,7 @@ from phases.PhaseContract import PhaseContract
 from .TimeOfDay import TimeOfDay
 
 class GameOverPhase(PhaseContract):
-   type = Literal["game_over"]
+   type = "game_over"
    time = TimeOfDay.morning
 
    async def run(self, state):

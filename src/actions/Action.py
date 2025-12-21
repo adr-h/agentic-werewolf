@@ -9,6 +9,7 @@ from events.Event import Event
 
 @dataclass
 class Action:
+   # name: str
    actorId: str
 
    def resolve(self, gameState: "GameState") -> Event:

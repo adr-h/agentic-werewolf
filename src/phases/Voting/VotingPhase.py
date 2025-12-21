@@ -15,13 +15,12 @@ from phases.Voting.events.VotingEndsEvent import VotingEndsEvent
 from ..TimeOfDay import TimeOfDay
 
 if TYPE_CHECKING:
-
    from GameState import GameState
 
 from phases.PhaseContract import PhaseContract
 
 class VotingPhase(PhaseContract):
-   type = Literal["voting"]
+   type = "voting"
    time = TimeOfDay.morning
 
    async def run(self, state: "GameState"):
@@ -44,13 +43,15 @@ class VotingPhase(PhaseContract):
 
    async def _collect_votes(self, state: "GameState"):
       timeout = 30
-      interval = 5
+      interval = 10
       while timeout > 0:
+         print(f"DEBUG: VOTING TIMEOUT {timeout}")
+         timeout -= interval
          everyone_has_voted = state.votes.has_everyone_voted(state.characters)
          if (everyone_has_voted):
+            print("DEBUG: EVERYONE VOTED!")
             break
          else:
-            timeout -= interval
             await asyncio.sleep(interval)
 
 

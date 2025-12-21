@@ -7,7 +7,7 @@ from typing import Callable, Literal
 
 from Role import Role, RoleView
 from actions.Action import Action
-from player.Player import Player
+
 
 CharacterState = Literal["alive", "dead"]
 
@@ -15,6 +15,7 @@ CharacterState = Literal["alive", "dead"]
 class CharacterView:
    name: str
    role: RoleView
+   state: CharacterState
 
 class Character:
    id: str
@@ -38,7 +39,8 @@ class Character:
          role = self.role.get_view(
             observer=observer,
             observed=self
-         )
+         ),
+         state = self.state
       )
 
 

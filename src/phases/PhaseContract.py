@@ -19,9 +19,9 @@ if TYPE_CHECKING:
 # from .Voting.VotingPhase import VotingPhase
 
 class PhaseContract(ABC):
-   @abstractmethod
-   async def run(self, state: "GameState"):
+   async def run(self, state: "GameState") -> None:
       raise NotImplementedError("Not implemented!")
+      return None
 
    @abstractmethod
    async def next(self, state: "GameState") -> "Phase | None":

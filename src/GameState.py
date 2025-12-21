@@ -21,7 +21,7 @@ from Role import Faction
 class GameView:
    characters: list[CharacterView]
    events: list[EventView]
-   votes: VoteBagView
+   # votes: VoteBagView
    phase: "Phase"
    is_chat_open: bool
 
@@ -56,11 +56,12 @@ class GameState:
          notify(self, event)
 
    def get_view(self, observer: "Character")-> "GameView":
+      event_view = [e.get_view(self, observer) for e in self.events]
       return GameView(
          phase = self.phase,
          characters = [c.get_view(observer) for c in self.characters],
-         events = [e.get_view(self, observer) for e in self.events],
-         votes = self.votes.get_view(observer),
+         events = event_view[::-1],
+         # votes = self.votes.get_view(observer),
          is_chat_open=self.is_chat_open
       )
 

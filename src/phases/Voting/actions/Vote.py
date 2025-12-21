@@ -62,11 +62,11 @@ class VoteSucceededEvent(Event):
    def apply(self, state: GameState):
       phase = state.phase
 
-      if phase == "voting":
+      if phase.type == "voting":
          state.votes.add_vote(
             self.actorId,
             NormalVote(voter_id= self.actorId, target_id = self.targetId)
          )
       else:
-         raise Exception('Cannot vote when it is not the voting phase! Debug')
+         raise Exception(f'Cannot vote when it is not the voting phase! Debug. Phase is {phase}')
 

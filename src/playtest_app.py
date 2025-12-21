@@ -12,6 +12,8 @@ from Vote import VoteBag
 from phases.Hunting.HuntingPhase import HuntingPhase
 from player.ManualPlayer import ManualPlayer
 from player.Player import Player
+import asyncio
+from ui.WerewolfApp import WerewolfApp
 
 
 def main():
@@ -38,6 +40,10 @@ def main():
       players=all_players,
       game_state=game_state
    )
+
+
+   app = WerewolfApp(game_engine=game_engine, players=all_players)
+   app.run()
 
 
 def get_cast() -> list[tuple[Character, Player]]:
@@ -98,3 +104,6 @@ def get_cast() -> list[tuple[Character, Player]]:
       (villager_4, player_4),
       (werewolf_1, player_5)
    ]
+
+if __name__ == "__main__":
+   main()

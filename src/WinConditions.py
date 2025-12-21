@@ -14,7 +14,7 @@ def get_win_result(state: "GameState") -> WinResult:
       v for v in state.characters if v.role.faction == "villagers" and v.state != "dead"
    ]
 
-   if living_werewolves == 0:
+   if len(living_werewolves) == 0:
       return "villagers"
 
    if len(living_werewolves) >= len(living_villagers):

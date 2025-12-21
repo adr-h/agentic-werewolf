@@ -1,6 +1,6 @@
 from collections import Counter
-from dataclasses import dataclass, field
-from typing import Dict, Literal
+from dataclasses import dataclass
+from typing import Literal
 
 from Character import Character
 
@@ -17,11 +17,10 @@ Vote = NormalVote | AbstainVote
 
 @dataclass
 class VoteBagView:
-   votes: Dict[str, Vote] = field(default_factory=dict)
+   votes: dict[str, Vote]
 
 class VoteBag:
-
-   votes: Dict[str, Vote] = field(default_factory=dict)
+   votes: dict[str, Vote] = {}
 
    def add_vote(self, voter_id: str, vote: Vote):
       self.votes[voter_id] = vote
@@ -31,17 +30,19 @@ class VoteBag:
 
    def has_everyone_voted(self, everyone: list[Character]) -> bool:
       for voter in everyone:
+         if voter.state == "dead":
+            continue
          if (self.votes.get(voter.id) is None):
             return False
 
       return True
 
-   def get_view(self, observer: Character) -> VoteBagView:
-      own_vote = self.votes[observer.id]
-      return VoteBagView(votes = {
-         observer.id: own_vote
-      })
-      # for now, just return the character's own vote
+   # def get_view(self, observer: Character) -> VoteBagView:
+   #    own_vote = self.votes.get(observer.id)
+   #    return VoteBagView(votes = {
+   #       observer.id: own_vote
+   #    })
+   # for now, just return the character's own vote
 
    def get_most_voted(self) -> str | None:
       all_voted_targets = [v.target_id for v in self.votes.values() if isinstance(v, NormalVote)]

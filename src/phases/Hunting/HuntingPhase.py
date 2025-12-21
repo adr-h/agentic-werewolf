@@ -16,7 +16,7 @@ from phases.PhaseContract import PhaseContract
 from ..TimeOfDay import TimeOfDay
 
 class HuntingPhase(PhaseContract):
-   type = Literal["hunting"]
+   type = "hunting"
    time = TimeOfDay.night
 
    async def run(self, state):
@@ -26,8 +26,9 @@ class HuntingPhase(PhaseContract):
    async def _wait_for_player_actions(self, state: GameState):
       # give all players time to make their decisions; check every 5 secs
       timeout = 30
-      interval = 5
+      interval = 10
       while timeout > 0:
+         timeout -= interval
          # TODO: spooky random events?
          await asyncio.sleep(interval)
 

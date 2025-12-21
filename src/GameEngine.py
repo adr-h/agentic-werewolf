@@ -17,16 +17,24 @@ class GameEngine:
    async def game_loop(self):
       game_state = self.game_state
 
-      while True:
-         current_phase = game_state.phase
 
-         await current_phase.run(state = game_state)
+      try:
+         while True:
+            self.alert_all_players(game_state, None)
+            current_phase = game_state.phase
 
-         next_phase = await current_phase.next(game_state)
-         if next_phase is None:
-            break
+            await current_phase.run(state = game_state)
 
-         game_state.phase = next_phase
+            next_phase = await current_phase.next(game_state)
+            if next_phase is None:
+               break
+
+            game_state.phase = next_phase
+      except Exception as e:
+         import traceback
+         traceback.print_exc()
+         # Also try to alert players of crash?
+         print(f"GAME ENGINE CRASH: {e}")
 
 
    def on_update(self, game_state: GameState, latest_event: Event | None):
