@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Button, DataTable, Static, Label, Tabs, Tab
+from textual.widgets import Header, Footer, Button, DataTable, Static, Label, Tabs, Tab, Input
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.reactive import reactive
 from textual.message import Message
@@ -8,6 +8,7 @@ from GameEngine import GameEngine
 from GameState import GameState, GameView
 from actions.Action import Action
 from player.ManualPlayer import ManualPlayer
+from player.Player import Player
 from events.Event import EventView
 import asyncio
 
@@ -36,16 +37,9 @@ class WerewolfApp(App):
     }
 
     #player_table {
-        width: 60%;
-        height: 100%;
+        width: 100%;
+        height: 20%;
         border: solid green;
-    }
-
-    #log_container {
-        width: 40%;
-        height: 100%;
-        border: solid blue;
-        margin-left: 1;
     }
 
     .section-header {
@@ -54,8 +48,16 @@ class WerewolfApp(App):
         padding: 0 1;
     }
 
+    #log_container {
+        width: 100%;
+        height: 20%;
+        border: solid blue;
+        margin-left: 1;
+    }
+
     #event_log {
-        height: 1fr;
+        width: 100%;
+        height: 100%;
         background: $surface;
     }
 
@@ -72,11 +74,20 @@ class WerewolfApp(App):
     Button {
         margin: 1;
     }
+    #chat_input {
+        margin: 1;
+        background: $surface;
+        border: tall $accent;
+    }
+
+    #chat_input:focus {
+        border: tall $primary;
+    }
     """
 
     current_player_id = reactive("")
 
-    def __init__(self, game_engine: GameEngine, players: list[ManualPlayer]):
+    def __init__(self, game_engine: GameEngine, players: list[Player]):
         super().__init__()
         self.game_engine = game_engine
         self.players = {p.id: p for p in players}
@@ -94,13 +105,14 @@ class WerewolfApp(App):
 
         with Vertical(id="game_view"):
             yield Label("Phase: [Loading...]", id="phase_info", classes="phase-header")
+            yield DataTable(id="player_table")
 
-            with Horizontal(classes="main-content"):
-                 yield DataTable(id="player_table")
+            with Vertical(id="log_container"):
+                yield Label("Event Log", classes="section-header")
+                yield VerticalScroll(id="event_log")
 
-                 with Vertical(id="log_container"):
-                     yield Label("Event Log", classes="section-header")
-                     yield VerticalScroll(id="event_log")
+            yield Label("Chat", classes="section-header", id="chat_header")
+            yield Input(placeholder="Type a message...", id="chat_input")
 
             yield Label("Actions", classes="section-header")
             with Horizontal(id="action_bar"):
@@ -188,10 +200,21 @@ class WerewolfApp(App):
         for event in view.events:
              log_view.mount(Label(f"> {event.description}"))
 
-        # Scroll to bottom? Textual might auto-scroll or need manual helper.
-        # log_view.scroll_end() # verify if this works
+        # Scroll to top as requested
+        log_view.scroll_home(animate=False)
 
-        # 4. Update Actions
+        # 4. Update Chat Input State
+        chat_input = self.query_one("#chat_input", Input)
+        chat_header = self.query_one("#chat_header", Label)
+
+        chat_input.disabled = not view.is_chat_open
+        chat_input.display = view.is_chat_open
+        chat_header.display = view.is_chat_open
+
+        if not chat_input.disabled:
+            chat_input.placeholder = "Type a message..."
+
+        # 5. Update Actions
         action_bar = self.query_one("#action_bar", Horizontal)
         await action_bar.remove_children()
 
@@ -219,6 +242,7 @@ class WerewolfApp(App):
         return f"{action.actorId}_{action.name.replace(' ', '_')}"
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
+        # Note: action_target is monkey-patched onto the Button in update_ui
         if hasattr(event.button, "action_target"):
             action = getattr(event.button, "action_target")
             await self.apply_player_action(action)
@@ -231,3 +255,11 @@ class WerewolfApp(App):
 
         except Exception as e:
             self.notify(f"Error executing action: {e}", severity="error")
+
+    async def on_input_submitted(self, event: Input.Submitted) -> None:
+        if event.input.id == "chat_input" and event.value:
+            player = self.players.get(self.current_player_id)
+            if player:
+                await player.send_chat(event.value)
+                event.input.value = ""
+

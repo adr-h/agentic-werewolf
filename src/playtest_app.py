@@ -9,6 +9,7 @@ from Investigation import InvestigationBag
 from Protection import ProtectionBag
 from Role import NormalVillagerRole, WerewolfRole
 from Vote import VoteBag
+from phases.Discussion.DiscussionPhase import DiscussionPhase
 from phases.Hunting.HuntingPhase import HuntingPhase
 from player.ManualPlayer import ManualPlayer
 from player.Player import Player
@@ -30,7 +31,7 @@ def main():
       autopsy=AutopsyBag(),
       investigations=InvestigationBag(),
       events=[],
-      phase=HuntingPhase(),
+      phase=DiscussionPhase(),
       winners=None,
       subscribers=[],
       is_chat_open=False

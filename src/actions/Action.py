@@ -9,8 +9,11 @@ from events.Event import Event
 
 @dataclass
 class Action:
-   # name: str
    actorId: str
+
+   @property
+   def name(self) -> str:
+      return "Action"
 
    def resolve(self, gameState: "GameState") -> Event:
       raise NotImplementedError("Action.resolve() must be implemented by subclasses.")

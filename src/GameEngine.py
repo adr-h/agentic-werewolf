@@ -15,6 +15,10 @@ class GameEngine:
       self.game_state=game_state
       self.game_state.subscribe(self.on_update)
 
+      for player in self.players:
+         player.on_action_sent = self.handle_action
+         player.on_chat_sent = self.handle_chat
+
    async def game_loop(self):
       game_state = self.game_state
 
@@ -62,3 +66,8 @@ class GameEngine:
 
       # Apply the event to the state
       self.game_state.apply_event(event)
+
+   async def handle_chat(self, player: Player, message: str):
+      from actions.Chat import ChatAction
+      action = ChatAction(name="Chat", actorId=player.character_id, message=message)
+      await self.handle_action(action)

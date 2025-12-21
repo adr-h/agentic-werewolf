@@ -8,8 +8,8 @@ from events.Event import Event, EventView
 
 @dataclass
 class ChatAction(Action):
-   name = "Chat",
    message: str
+   name: str = "Chat"
 
    def resolve(self, gameState: GameState):
       return ChatEvent(self.actorId, self.message)

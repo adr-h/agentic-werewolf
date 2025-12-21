@@ -30,6 +30,3 @@ class ManualPlayer(Player):
    #    await asyncio.sleep(5)
    #    chosen_action = possible_actions[0]
    #    return chosen_action
-
-   async def send_chat(self, message: str):
-      raise NotImplementedError("TODO")

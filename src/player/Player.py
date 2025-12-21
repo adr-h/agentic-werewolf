@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable, Sequence, TYPE_CHECKING
+from typing import Callable, Coroutine, Sequence, TYPE_CHECKING
 
 # if TYPE_CHECKING:
 from actions.Action import Action
@@ -12,15 +12,15 @@ type ChatSender = Callable[[str], bool]
 # Player = AgenticPlayer | ManualPlayer
 class Player(ABC):
    id: str
+   name: str
    character_id: str
    current_game_view: GameView | None = None
    possible_actions: Sequence["Action"] = []
    event_history: list["EventView"] = []
 
    on_update: Callable[[], None] | None = None
-
-   def get_public_view(self) -> "GameView":
-      raise NotImplementedError("TODO")
+   on_action_sent: Callable[[Action], Coroutine[None, None, None]] | None = None
+   on_chat_sent: Callable[["Player", str], Coroutine[None, None, None]] | None = None
 
    def receive_update(self, game_view: "GameView", actions: Sequence[Action], latest_event: None | EventView):
       self.current_game_view = game_view
@@ -32,11 +32,9 @@ class Player(ABC):
          self.on_update()
 
    async def send_chat(self, message: str):
-      raise NotImplementedError("TODO")
+      if self.on_chat_sent:
+         await self.on_chat_sent(self, message)
 
    async def send_action(self, action: Action):
-      raise NotImplementedError("TODO")
-
-   # @abstractmethod
-   # async def decide_action(self, prompt: str, game_view: GameView, get_actions: ActionsGetter) -> Action:
-   #    raise NotImplementedError("TODO")
+      if self.on_action_sent:
+         await self.on_action_sent(action)
