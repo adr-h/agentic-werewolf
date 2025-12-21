@@ -3,6 +3,7 @@
 from GameState import GameState
 from events.Event import Event
 from player.Player import Player
+from actions.Action import Action
 
 
 class GameEngine:
@@ -54,3 +55,10 @@ class GameEngine:
    def alert_all_players(self, game_state: GameState, event: None | Event):
       for p in self.players:
          self.alert_player(game_state, p, event)
+
+   async def handle_action(self, action: Action):
+      # Resolve the action to an event
+      event = action.resolve(self.game_state)
+
+      # Apply the event to the state
+      self.game_state.apply_event(event)

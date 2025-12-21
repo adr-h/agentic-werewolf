@@ -224,16 +224,8 @@ class WerewolfApp(App):
             await self.apply_player_action(action)
 
     async def apply_player_action(self, action: Action):
-        # We need the game state. It's in the engine.
-        game_state = self.game_engine.game_state
-
         try:
-            # Resolve the action to an event
-            event = action.resolve(game_state)
-
-            # Apply the event to the state
-            game_state.apply_event(event)
-
+            await self.game_engine.handle_action(action)
             # Force a re-render/update so the player sees the result immediately
             self.notify(f"Action executed: {action.name}")
 
