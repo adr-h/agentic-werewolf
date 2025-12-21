@@ -2,9 +2,11 @@ import asyncio
 from agents import Agent, InputGuardrail, GuardrailFunctionOutput, Runner, set_default_openai_client, SQLiteSession
 import random
 import string
-from typing import Callable, Literal, Sequence
+from typing import Callable, Sequence, TYPE_CHECKING
 
-from GameState import GameView
+if TYPE_CHECKING:
+    from GameState import GameView
+
 from actions.Action import Action
 from phases.Phase import PhaseType
 from .Player import Player

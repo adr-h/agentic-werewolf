@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Callable, Sequence
+from typing import Callable, Sequence, TYPE_CHECKING
 
-from GameState import GameView
+if TYPE_CHECKING:
+    from GameState import GameView
 from actions.Action import Action
 from events.Event import Event, EventView
-from .AgenticPlayer import AgenticPlayer
-from .ManualPlayer import ManualPlayer
 
 type ActionsGetter = Callable[[], Sequence[Action]]
 type ChatSender = Callable[[str], bool]
@@ -15,10 +14,10 @@ class Player(ABC):
    id: str
    character_id: str
 
-   def get_public_view(self) -> GameView:
+   def get_public_view(self) -> "GameView":
       raise NotImplementedError("TODO")
 
-   def receive_update(self, game_view: GameView, actions: Sequence[Action], latest_event: None | EventView):
+   def receive_update(self, game_view: "GameView", actions: Sequence[Action], latest_event: None | EventView):
       raise NotImplementedError("TODO")
 
    async def send_chat(self, message: str):

@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import TYPE_CHECKING
 from enum import Enum
-from typing import Any, Dict
 
-from Character import Character
-
-from ..GameState import GameState
+if TYPE_CHECKING:
+    from ..GameState import GameState
+    from Character import Character
 
 @dataclass
 class EventView:
@@ -23,10 +23,10 @@ class Event:
 
     # TODO: for now, this is intended to directly mutate GameState to make implementation easier.
     # But to make "undo" possible, it will make more sense to have `apply` return a new GameState
-    def apply(self, state: GameState) -> None:
+    def apply(self, state: "GameState") -> None:
         raise NotImplementedError("Event.apply() must be implemented by subclasses.")
 
-    def get_view(self, state: GameState, observer: Character) -> EventView:
+    def get_view(self, state: "GameState", observer: "Character") -> EventView:
         raise NotImplementedError("Event.describe() must be implemented by subclasses.")
 
 

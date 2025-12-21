@@ -1,9 +1,11 @@
-from typing import Literal
-from GameState import GameState
+from typing import Literal, TYPE_CHECKING
 
 WinResult = Literal["no_winners_yet", "werewolves", "villagers"]
 
-def get_win_result(state: GameState) -> WinResult:
+if TYPE_CHECKING:
+   from GameState import GameState
+
+def get_win_result(state: "GameState") -> WinResult:
    living_werewolves = [
       w for w in state.characters if w.role.faction == "werewolves" and w.state != "dead"
    ]

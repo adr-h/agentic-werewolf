@@ -6,13 +6,13 @@ from GameState import GameState
 from WinConditions import get_win_result
 from events.VillagersWin import VillagersWinEvent
 from events.WerewolvesWin import WerewolvesWinEvent
-from phases.Discussion.DiscussionPhase import DiscussionPhase
+
 from phases.Hunting.actions.Hunt import HuntAction
 from phases.Hunting.actions.Protect import ProtectAction
 from phases.Hunting.events.HuntingEndsEvent import HuntingEndsEvent
 from phases.Hunting.events.PeacefulNightEvent import PeacefulNightEvent
 from phases.Hunting.events.SuccessfulHuntEvent import SuccessfulHuntEvent
-from phases.Phase import PhaseContract
+from phases.PhaseContract import PhaseContract
 from ..TimeOfDay import TimeOfDay
 
 class HuntingPhase(PhaseContract):
@@ -59,6 +59,7 @@ class HuntingPhase(PhaseContract):
 
       state.apply_event(HuntingEndsEvent())
 
+      from phases.Discussion.DiscussionPhase import DiscussionPhase
       return DiscussionPhase()
 
    def get_possible_actions(self, state, actor):

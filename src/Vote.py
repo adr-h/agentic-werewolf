@@ -1,5 +1,5 @@
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, Literal
 
 from Character import Character
@@ -17,10 +17,11 @@ Vote = NormalVote | AbstainVote
 
 @dataclass
 class VoteBagView:
-   votes: Dict[str, Vote] = {}
+   votes: Dict[str, Vote] = field(default_factory=dict)
 
 class VoteBag:
-   votes: Dict[str, Vote] = {}
+
+   votes: Dict[str, Vote] = field(default_factory=dict)
 
    def add_vote(self, voter_id: str, vote: Vote):
       self.votes[voter_id] = vote

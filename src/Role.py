@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import Literal, TypedDict, Callable
-from Character import Character
+from typing import Literal, TypedDict, Callable, TYPE_CHECKING
 from enum import Enum
+
+if TYPE_CHECKING:
+    from Character import Character
 
 Faction = Literal["werewolves", "villagers"]
 
@@ -20,7 +22,7 @@ class NormalVillagerRole():
 
    faction: Faction = "villagers"
 
-   def get_view(self, observer: Character, observed: Character):
+   def get_view(self, observer: "Character", observed: "Character"):
       return RoleView(
          name = "Normal Villager",
          faction = "villagers"
@@ -35,7 +37,7 @@ class WerewolfRole():
 
    faction: Faction = "werewolves"
 
-   def get_view(self, observer: Character, observed: Character):
+   def get_view(self, observer: "Character", observed: "Character"):
       if (observer.role.faction == "werewolves" or observer.observed.get(observed.id, False)):
          return RoleView(
             name = "Werewolf",
@@ -51,7 +53,7 @@ class Bodyguard(NormalVillagerRole):
    name = "Bodyguard"
    can_protect = True # TODO: a trait system so this can scale
 
-   def get_view(self, observer: Character, observed: Character):
+   def get_view(self, observer: "Character", observed: "Character"):
       if (observer.observed.get(observed.id, False)):
          return RoleView(
             name = "Bodyguard",
@@ -67,7 +69,7 @@ class Detective(NormalVillagerRole):
    name = "Detective"
    can_use_foresight = True # TODO: a trait system so this can scale
 
-   def get_view(self, observer: Character, observed: Character):
+   def get_view(self, observer: "Character", observed: "Character"):
       if (observer.observed.get(observed.id, False)):
          return RoleView(
             name = "Detective",
@@ -83,7 +85,7 @@ class Doctor(NormalVillagerRole):
    name = "Doctor"
    can_perform_autopsy = True
 
-   def get_view(self, observer: Character, observed: Character):
+   def get_view(self, observer: "Character", observed: "Character"):
       if (observer.observed.get(observed.id, False)):
          return RoleView(
             name = "Doctor",

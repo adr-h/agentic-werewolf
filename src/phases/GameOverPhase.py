@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Literal
 
-from phases.Phase import PhaseContract
+from phases.PhaseContract import PhaseContract
 from .TimeOfDay import TimeOfDay
 
 class GameOverPhase(PhaseContract):

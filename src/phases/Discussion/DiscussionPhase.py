@@ -5,10 +5,10 @@ from typing import Literal
 from GameState import GameState
 from actions.Chat import ChatAction
 from phases.Discussion.events.ChatReminderEvent import ChatReminderEvent
-from phases.Voting.VotingPhase import VotingPhase
+
 from .events.ChatClosedEvent import ChatClosedEvent
 from .events.ChatOpenedEvent import ChatOpenedEvent
-from phases.Phase import PhaseContract
+from phases.PhaseContract import PhaseContract
 from ..TimeOfDay import TimeOfDay
 
 class DiscussionPhase(PhaseContract):
@@ -29,6 +29,7 @@ class DiscussionPhase(PhaseContract):
 
    async def next(self, state: GameState):
       state.apply_event(ChatClosedEvent())
+      from phases.Voting.VotingPhase import VotingPhase
       return VotingPhase()
 
    def get_possible_actions(self, state, actor):
