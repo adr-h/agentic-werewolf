@@ -1,14 +1,14 @@
 
 
-from Autopsy import AutopsyBag
+from Autopsy import AutopsyRegistry
 from Character import Character
 from GameEngine import GameEngine
 from GameState import GameState
-from Hunt import HuntingBag
-from Investigation import InvestigationBag
-from Protection import ProtectionBag
+from Hunt import HuntingRegistry
+from Investigation import InvestigationRegistry
+from Protection import ProtectionRegistry
 from Role import NormalVillagerRole, WerewolfRole
-from Vote import VoteBag
+from Vote import VoteRegistry
 from phases.Discussion.DiscussionPhase import DiscussionPhase
 from phases.Hunting.HuntingPhase import HuntingPhase
 from player.ManualPlayer import ManualPlayer
@@ -25,13 +25,13 @@ def main():
 
    game_state = GameState(
       characters=all_characters,
-      votes=VoteBag(),
-      hunts=HuntingBag(),
-      protection=ProtectionBag(),
-      autopsy=AutopsyBag(),
-      investigations=InvestigationBag(),
+      votes=VoteRegistry(),
+      hunts=HuntingRegistry(),
+      protection=ProtectionRegistry(),
+      autopsy=AutopsyRegistry(),
+      investigations=InvestigationRegistry(),
       events=[],
-      phase=DiscussionPhase(),
+      phase=HuntingPhase(),
       winners=None,
       subscribers=[],
       is_chat_open=False
@@ -41,7 +41,6 @@ def main():
       players=all_players,
       game_state=game_state
    )
-
 
    app = WerewolfApp(game_engine=game_engine, players=all_players)
    app.run()

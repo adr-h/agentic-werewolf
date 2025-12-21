@@ -6,7 +6,7 @@ class Autopsy:
    examiner_id: str
    deceased_id: str
 
-class AutopsyBag:
+class AutopsyRegistry:
    autopsy_relationships: dict[str, Autopsy] = {}
 
    def add_autopsy(self, autopsy: Autopsy):

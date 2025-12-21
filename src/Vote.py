@@ -16,10 +16,10 @@ class AbstainVote:
 Vote = NormalVote | AbstainVote
 
 @dataclass
-class VoteBagView:
+class VoteRegistryView:
    votes: dict[str, Vote]
 
-class VoteBag:
+class VoteRegistry:
    votes: dict[str, Vote] = {}
 
    def add_vote(self, voter_id: str, vote: Vote):
@@ -37,9 +37,9 @@ class VoteBag:
 
       return True
 
-   # def get_view(self, observer: Character) -> VoteBagView:
+   # def get_view(self, observer: Character) -> VoteRegistryView:
    #    own_vote = self.votes.get(observer.id)
-   #    return VoteBagView(votes = {
+   #    return VoteRegistryView(votes = {
    #       observer.id: own_vote
    #    })
    # for now, just return the character's own vote

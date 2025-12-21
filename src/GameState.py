@@ -2,18 +2,18 @@ from typing import Dict, Literal, Callable, Sequence, TYPE_CHECKING
 from dataclasses import dataclass
 
 if TYPE_CHECKING:
-   from Autopsy import AutopsyBag
+   from Autopsy import AutopsyRegistry
    from Character import Character
-   from Hunt import HuntingBag
-   from Investigation import InvestigationBag
-   from Protection import ProtectionBag
+   from Hunt import HuntingRegistry
+   from Investigation import InvestigationRegistry
+   from Protection import ProtectionRegistry
    from phases.Phase import PhaseType, Phase
    from player.Player import Player
-   from Vote import VoteBag
+   from Vote import VoteRegistry
 
 from Character import CharacterView
 from events.Event import EventView, Event
-from Vote import VoteBagView
+from Vote import VoteRegistryView
 from Role import Faction
 
 
@@ -21,7 +21,6 @@ from Role import Faction
 class GameView:
    characters: list[CharacterView]
    events: list[EventView]
-   # votes: VoteBagView
    phase: "Phase"
    is_chat_open: bool
 
@@ -31,11 +30,11 @@ class GameView:
 class GameState:
    characters: list["Character"]
 
-   votes: "VoteBag"
-   hunts: "HuntingBag"
-   protection: "ProtectionBag"
-   autopsy: "AutopsyBag"
-   investigations: "InvestigationBag"
+   votes: "VoteRegistry"
+   hunts: "HuntingRegistry"
+   protection: "ProtectionRegistry"
+   autopsy: "AutopsyRegistry"
+   investigations: "InvestigationRegistry"
 
    events: list["Event"]
 

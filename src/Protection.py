@@ -6,7 +6,7 @@ class Protection:
    protector_id: str
    protected_id: str
 
-class ProtectionBag:
+class ProtectionRegistry:
    protection_relationships: dict[str, Protection] = {}
 
    def add_protection(self, protection: Protection):

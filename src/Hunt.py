@@ -7,7 +7,7 @@ class Hunting:
    hunter_id: str
    prey_id: str
 
-class HuntingBag:
+class HuntingRegistry:
    hunting_relationships: dict[str, Hunting] = {}
 
    def add_hunting(self, hunting: Hunting):

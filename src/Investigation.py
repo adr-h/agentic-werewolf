@@ -6,7 +6,7 @@ class Investigation:
    examiner_id: str
    suspect_id: str
 
-class InvestigationBag:
+class InvestigationRegistry:
    investigation_relationships: dict[str, Investigation] = {}
 
    def add_investigation(self, investigation: Investigation):
