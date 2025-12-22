@@ -62,18 +62,18 @@ class VotingPhase(PhaseContract):
 
       actions = [
          VoteAction(
-            name = f"Vote to execute {t.name}",
             actorId = actor.id,
-            targetId = t.id
+            targetId = t.id,
+            targetName = t.name
          ) for t in living_characters_excluding_self
       ]
 
       actions.append(
-         # TODO: a dedicated "Asbtain" event instead
+         # TODO: a dedicated "Abstain" event instead
          VoteAction(
-            name = "Abstain from voting anyone for execution",
             actorId = actor.id,
-            targetId = None
+            targetId = None,
+            targetName = None
          )
       )
 

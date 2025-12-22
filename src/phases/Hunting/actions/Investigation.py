@@ -12,7 +12,17 @@ from Protection import Protection
 @dataclass
 class InvestigateAction(Action):
    targetId: str
-   name: str = "Investigate"
+   targetName: str
+
+   @property
+   def name(self) -> str:
+      return f"Investigate {self.targetName}"
+
+   @property
+   def description(self) -> str:
+      return f"Investigates {self.targetName} to reveal their role."
+   tool_inputs = {}
+   tool_output_type = "None"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)

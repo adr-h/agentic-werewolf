@@ -10,7 +10,21 @@ from datetime import datetime
 @dataclass
 class VoteAction(Action):
    targetId: str | None
-   name: str = "Vote for Execution"
+   targetName: str | None = None
+
+   @property
+   def name(self) -> str:
+      if self.targetId is None:
+         return "Abstain from voting"
+      return f"Vote {self.targetName} for execution"
+
+   @property
+   def description(self) -> str:
+      if self.targetId is None:
+         return "Abstain from voting for this round"
+      return f"Vote for {self.targetName} to be executed this round"
+   tool_inputs = {}
+   tool_output_type = "None"
 
    def resolve(self, gameState: GameState):
       # TODO: abstraining from voting should be its own action!

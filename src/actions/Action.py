@@ -1,7 +1,7 @@
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 if TYPE_CHECKING:
    from GameState import GameState
@@ -11,9 +11,16 @@ from events.Event import Event
 class Action:
    actorId: str
 
+   tool_inputs: ClassVar[dict] = {}
+   tool_output_type: ClassVar[str] = "Event"
+
    @property
    def name(self) -> str:
-      return "Action"
+      return self.__class__.__name__.replace("Action", "")
+
+   @property
+   def description(self) -> str:
+      return f"Perform {self.name}"
 
    def resolve(self, gameState: "GameState") -> Event:
       raise NotImplementedError("Action.resolve() must be implemented by subclasses.")

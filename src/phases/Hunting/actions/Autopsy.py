@@ -11,7 +11,17 @@ from Protection import Protection
 @dataclass
 class AutopsyAction(Action):
    targetId: str
-   name: str = "Perform autopsy"
+   targetName: str
+
+   @property
+   def name(self) -> str:
+      return f"Perform autopsy on {self.targetName}"
+
+   @property
+   def description(self) -> str:
+      return f"Performs an autopsy on {self.targetName} to reveal their role."
+   tool_inputs = {}
+   tool_output_type = "None"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)

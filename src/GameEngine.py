@@ -69,5 +69,5 @@ class GameEngine:
 
    async def handle_chat(self, player: Player, message: str):
       from actions.Chat import ChatAction
-      action = ChatAction(name="Chat", actorId=player.character_id, message=message)
+      action = ChatAction(actorId=player.character_id, message=message)
       await self.handle_action(action)

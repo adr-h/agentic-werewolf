@@ -7,6 +7,7 @@ from WinConditions import get_win_result
 from events.VillagersWin import VillagersWinEvent
 from events.WerewolvesWin import WerewolvesWinEvent
 
+from phases.Hunting.actions.Autopsy import AutopsyAction
 from phases.Hunting.actions.Hunt import HuntAction
 from phases.Hunting.actions.Protect import ProtectAction
 from phases.Hunting.events.HuntingEndsEvent import HuntingEndsEvent
@@ -77,8 +78,8 @@ class HuntingPhase(PhaseContract):
       if actor.role.can_kill:
          return [
             HuntAction(
-               name = f"Hunt {char.name}",
                targetId = char.id,
+               targetName = char.name,
                actorId = actor.id
             )
             for char in living_characters
@@ -87,8 +88,8 @@ class HuntingPhase(PhaseContract):
       if actor.role.can_protect and not state.protection.has_already_protected(actor.id):
          return [
             ProtectAction(
-               name = f"Protect {char.name}",
                targetId = char.id,
+               targetName = char.name,
                actorId = actor.id
             )
             for char in living_characters
@@ -96,9 +97,9 @@ class HuntingPhase(PhaseContract):
 
       if actor.role.can_perform_autopsy and not state.autopsy.has_already_performed_autopsy(actor.id):
          return [
-            ProtectAction(
-               name = f"Perform autopsy on {char.name}",
+            AutopsyAction(
                targetId = char.id,
+               targetName = char.name,
                actorId = actor.id
             )
             for char in dead_characters

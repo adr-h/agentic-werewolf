@@ -10,7 +10,17 @@ from Protection import Protection
 @dataclass
 class ProtectAction(Action):
    targetId: str
-   name: str = "Protect Character"
+   targetName: str
+
+   @property
+   def name(self) -> str:
+      return f"Protect {self.targetName}"
+
+   @property
+   def description(self) -> str:
+      return f"Protects {self.targetName} from being hunted."
+   tool_inputs = {}
+   tool_output_type = "None"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
