@@ -1,5 +1,6 @@
 
 
+from player.agentic_player.AgenticPlayer import AgenticPlayer
 from Autopsy import AutopsyRegistry
 from Character import Character
 from GameEngine import GameEngine
@@ -57,7 +58,8 @@ def get_cast() -> list[tuple[Character, Player]]:
    )
    player_1 = ManualPlayer(
       name=villager_1.name,
-      character_id=villager_1.id
+      character_id=villager_1.id,
+      character=villager_1
    )
 
    villager_2 = Character(
@@ -67,7 +69,8 @@ def get_cast() -> list[tuple[Character, Player]]:
    )
    player_2 = ManualPlayer(
       name=villager_2.name,
-      character_id=villager_2.id
+      character_id=villager_2.id,
+      character=villager_2
    )
 
    villager_3 = Character(
@@ -77,7 +80,8 @@ def get_cast() -> list[tuple[Character, Player]]:
    )
    player_3 = ManualPlayer(
       name=villager_3.name,
-      character_id=villager_3.id
+      character_id=villager_3.id,
+      character=villager_3
    )
 
    villager_4 = Character(
@@ -87,7 +91,8 @@ def get_cast() -> list[tuple[Character, Player]]:
    )
    player_4 = ManualPlayer(
       name=villager_4.name,
-      character_id=villager_4.id
+      character_id=villager_4.id,
+      character=villager_4
    )
 
    werewolf_1 = Character(
@@ -95,10 +100,17 @@ def get_cast() -> list[tuple[Character, Player]]:
       role=WerewolfRole(),
       state="alive",
    )
-   player_5 = ManualPlayer(
+   player_5 = AgenticPlayer(
       name=werewolf_1.name,
-      character_id=werewolf_1.id
+      character_id=werewolf_1.id,
+      character=werewolf_1,
+      model_id="openai/gpt-4o"
    )
+   # player_5 = ManualPlayer(
+   #    name=werewolf_1.name,
+   #    character_id=werewolf_1.id,
+   #    character=werewolf_1
+   # )
 
    return [
       (villager_1, player_1),

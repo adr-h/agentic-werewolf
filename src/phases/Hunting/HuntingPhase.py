@@ -95,6 +95,7 @@ class HuntingPhase(PhaseContract):
             for char in living_characters
          ]
 
+      # TODO: move autopsy ability to the Discussion phase?
       if actor.role.can_perform_autopsy and not state.autopsy.has_already_performed_autopsy(actor.id):
          return [
             AutopsyAction(

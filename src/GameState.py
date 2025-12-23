@@ -7,7 +7,7 @@ if TYPE_CHECKING:
    from Hunt import HuntingRegistry
    from Investigation import InvestigationRegistry
    from Protection import ProtectionRegistry
-   from phases.Phase import PhaseType, Phase
+   from phases.Phase import Phase
    from player.Player import Player
    from Vote import VoteRegistry
 

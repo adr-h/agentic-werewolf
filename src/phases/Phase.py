@@ -7,4 +7,4 @@ from typing import Literal
 
 Phase = VotingPhase | HuntingPhase | DiscussionPhase | GameOverPhase
 
-PhaseType = Literal[VotingPhase.type, HuntingPhase.type, DiscussionPhase.type, GameOverPhase.type]
+# PhaseType = Literal[VotingPhase.type, HuntingPhase.type, DiscussionPhase.type, GameOverPhase.type]

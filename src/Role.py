@@ -14,13 +14,36 @@ class RoleView():
 
 class NormalVillagerRole():
    name = "Normal Villager"
+   faction: Faction = "villagers"
+
+   description = """
+   You are a normal villager in the social deception game "Werewolf".
+   You have no special powers — only logic, observation, and social deduction.
+   Your goal is to identify and eliminate all Werewolves before they eliminate the village.
+
+   During the "Discussion Phase",
+     - you can freely send chat messages, allowing you to:
+       - accuse another player of being a Werewolf.
+       - defend yourself convincingly when accused.
+       - ask sharp questions to expose contradictions or nervous behavior.
+
+   During the "Voting Phase",
+     - you are not allowed to send chat messages.
+     - you can:
+       - vote for another player to be eliminated
+       - do nothing
+     - The player with the most votes in this phase will be eliminated.
+
+   During the "Hunting Phase",
+     - you have no available actions and are not allowed to send chat messages.
+     - All you can do is sit and hope for the best.
+   """
 
    can_kill = False # TODO: a trait system so this can scale
    can_protect = False # TODO: a trait system so this can scale
    can_use_foresight = False # TODO: a trait system so this can scale
    can_perform_autopsy = False # TODO: a trait system so this can scale
 
-   faction: Faction = "villagers"
 
    def get_view(self, observer: "Character", observed: "Character"):
       return RoleView(
@@ -30,12 +53,43 @@ class NormalVillagerRole():
 
 class WerewolfRole():
    name = "Werewolf"
+   faction: Faction = "werewolves"
+
+   description="""
+   You are a werewolf in the social deception game "Werewolf".
+   You have the power to kill one player during the "Hunting Phase".
+   Your goal is to eliminate all the villagers before they eliminate you.
+
+   During the "Discussion Phase",
+     - you can freely send chat messages, allowing you to:
+       - pretend to be villager-aligned special-role (e.g: Bodyguard, Detective, Doctor)
+       - accuse another player of being a Werewolf.
+       - defend yourself convincingly when accused.
+       - defend your fellow Werewolves when they are accused.
+       - ask sharp questions to expose contradictions or nervous behavior.
+
+   During the "Voting Phase",
+     - you are not allowed to send chat messages.
+     - you can:
+       - vote for another player to be eliminated
+       - do nothing
+     - the player with the most votes in this phase will be eliminated.
+
+   During the "Hunting Phase",
+     - you can:
+       - choose to hunt another player
+       - choose to do nothing
+     - you cannot send chat messages.
+     - you cannot kill a player who has been protected by a Bodyguard.
+     - only ONE player can be killed per hunting phase - if multiple werewolves choose to hunt, only the latest chosen player will be killed.
+   """
+
+
    can_kill = True # TODO: a trait system so this can scale
    can_protect = False # TODO: a trait system so this can scale
    can_use_foresight = False # TODO: a trait system so this can scale
    can_perform_autopsy = False # TODO: a trait system so this can scale
 
-   faction: Faction = "werewolves"
 
    def get_view(self, observer: "Character", observed: "Character"):
       if (observer.role.faction == "werewolves" or observer.observed.get(observed.id, False)):
@@ -53,6 +107,34 @@ class Bodyguard(NormalVillagerRole):
    name = "Bodyguard"
    can_protect = True # TODO: a trait system so this can scale
 
+   description="""
+   You are a bodyguard in the social deception game "Werewolf".
+   You have the power to protect one player during the "Hunting Phase".
+   Your goal is to protect your chosen player from being eliminated, and assist the villagers in winning the game.
+
+   During the "Discussion Phase",
+     - you can freely send chat messages, allowing you to:
+       - accuse another player of being a Werewolf.
+       - defend yourself convincingly when accused.
+       - ask sharp questions to expose contradictions or nervous behavior.
+
+   During the "Voting Phase",
+     - you are not allowed to send chat messages.
+     - you can:
+       - vote for another player to be eliminated
+       - do nothing
+     - The player with the most votes in this phase will be eliminated.
+
+   During the "Hunting Phase",
+     - you can
+       - choose to protect another player from being hunted
+       - choose to do nothing
+     - you cannot send chat messages.
+     - you CANNOT protect yourself from being hunted
+   """
+
+
+
    def get_view(self, observer: "Character", observed: "Character"):
       if (observer.observed.get(observed.id, False)):
          return RoleView(
@@ -69,6 +151,34 @@ class Detective(NormalVillagerRole):
    name = "Detective"
    can_use_foresight = True # TODO: a trait system so this can scale
 
+   description = """
+   You are a detective in the social deception game "Werewolf".
+   You have the power to use foresight during the "Hunting Phase".
+   Your goal is to identify Werewolves and assist the villagers in winning the game.
+
+   During the "Discussion Phase",
+     - you can freely send chat messages, allowing you to:
+       - accuse another player of being a Werewolf.
+       - defend yourself convincingly when accused.
+       - ask sharp questions to expose contradictions or nervous behavior.
+       - choose to either share your foresight findings or keep them private
+
+   During the "Voting Phase",
+     - you are not allowed to send chat messages.
+     - you can:
+       - vote for another player to be eliminated
+       - do nothing
+     - The player with the most votes in this phase will be eliminated.
+
+   During the "Hunting Phase",
+     - you cannot send chat messages.
+     - you can
+       - choose to use foresight to identify the true roles of another player
+         - this allows you to identify Werewolves that are pretending to be villagers
+       - choose to do nothing
+   """
+
+
    def get_view(self, observer: "Character", observed: "Character"):
       if (observer.observed.get(observed.id, False)):
          return RoleView(
@@ -84,6 +194,10 @@ class Detective(NormalVillagerRole):
 class Doctor(NormalVillagerRole):
    name = "Doctor"
    can_perform_autopsy = True
+
+   description = """
+   TODO
+   """
 
    def get_view(self, observer: "Character", observed: "Character"):
       if (observer.observed.get(observed.id, False)):
