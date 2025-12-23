@@ -18,7 +18,7 @@ class Player(ABC):
    possible_actions: Sequence["Action"] = []
    event_history: list["EventView"] = []
 
-   on_update: Callable[[], None] | None = None
+   on_update: Callable[["Player"], None] | None = None
    on_action_sent: Callable[[Action], Coroutine[None, None, None]] | None = None
    on_chat_sent: Callable[["Player", str], Coroutine[None, None, None]] | None = None
 
@@ -29,7 +29,7 @@ class Player(ABC):
          self.event_history.append(latest_event)
 
       if self.on_update:
-         self.on_update()
+         self.on_update(self)
 
    async def send_chat(self, message: str):
       if self.on_chat_sent:

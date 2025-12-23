@@ -93,6 +93,7 @@ class WerewolfApp(App):
     def __init__(self, players: list[Player]):
         super().__init__()
         self.players = {p.id: p for p in players}
+        self._update_lock = asyncio.Lock()
         # default to first player
         if players:
             self.current_player_id = players[0].id
@@ -135,11 +136,13 @@ class WerewolfApp(App):
             player.on_update = self.on_player_update
 
         # Initial refresh
-        await self.update_ui()
-
-    def on_player_update(self):
-        # Schedule the async update_ui on the event loop
         asyncio.create_task(self.update_ui())
+
+    def on_player_update(self, player: Player):
+        # Only update the UI if this update is for the player currently being viewed
+        if player.id == self.current_player_id:
+            # Schedule the async update_ui on the event loop
+            asyncio.create_task(self.update_ui())
 
     async def on_tabs_tab_activated(self, event: Tabs.TabActivated) -> None:
         # Update current player when tab changes
@@ -152,94 +155,73 @@ class WerewolfApp(App):
         if not self.current_player_id:
             return
 
-        player = self.players.get(self.current_player_id)
-        if not player:
-            self.notify(f"Player {self.current_player_id} not found!", severity="error")
-            return
-        if not player.current_game_view:
-            return
+        async with self._update_lock:
+            player = self.players.get(self.current_player_id)
+            if not player or not player.current_game_view:
+                return
 
-        view = player.current_game_view
+            view = player.current_game_view
 
-        # 1. Update Phase Info
-        phase_label = self.query_one("#phase_info", Label)
-        phase_text = f"Phase: {view.phase.type} | Time: {view.phase.time}"
-        if view.phase.type == "game_over":
-             # TODO: add winners logic if available in view, but mostly it's in events
-             pass
-        phase_label.update(phase_text)
+            # 1. Update Phase Info
+            phase_label = self.query_one("#phase_info", Label)
+            phase_text = f"Phase: {view.phase.type} | Time: {view.phase.time}"
+            phase_label.update(phase_text)
 
-        # 2. Update Player Table
-        table = self.query_one("#player_table", DataTable)
-        table.clear()
+            # 2. Update Player Table
+            table = self.query_one("#player_table", DataTable)
+            table.clear()
+            sorted_chars = sorted(view.characters, key=lambda c: c.name)
 
-        # We need to sort or consistent order?
-        # view.characters order might change? Let's assume consistent for now or sort by name.
-        sorted_chars = sorted(view.characters, key=lambda c: c.name)
+            for char in sorted_chars:
+                table.add_row(
+                    char.name,
+                    char.role.name,
+                    char.role.faction.title(),
+                    char.state.title(),
+                    label=char.name
+                )
 
-        for char in sorted_chars:
-            # Determine row style based on state
-            style = ""
-            if char.state == "dead":
-                style = "dim"
-            elif char.role.faction == "werewolves":
-                 # Only if visible! logic is handled by get_view
-                 # But we can style it if we know.
-                 # Actually RoleView.faction tells us what THIS player knows.
-                 if char.role.faction == "werewolves":
-                     style = "bold red"
+            # 3. Update Event Log
+            log_view = self.query_one("#event_log", VerticalScroll)
+            await log_view.remove_children()
 
-            table.add_row(
-                char.name,
-                char.role.name,
-                char.role.faction.title(),
-                char.state.title(),
-                label=char.name # key for updates if needed, but we clear/rewrite
-            )
+            for event in view.events:
+                 log_view.mount(Label(f"> {event.description}"))
 
-        # 3. Update Event Log
-        log_view = self.query_one("#event_log", VerticalScroll)
-        await log_view.remove_children()
+            # Scroll to top as requested
+            log_view.scroll_home(animate=False)
 
-        for event in view.events:
-             log_view.mount(Label(f"> {event.description}"))
+            # 4. Update Chat Input State
+            chat_input = self.query_one("#chat_input", Input)
+            chat_header = self.query_one("#chat_header", Label)
 
-        # Scroll to top as requested
-        log_view.scroll_home(animate=False)
+            chat_input.disabled = not view.is_chat_open
+            chat_input.display = view.is_chat_open
+            chat_header.display = view.is_chat_open
 
-        # 4. Update Chat Input State
-        chat_input = self.query_one("#chat_input", Input)
-        chat_header = self.query_one("#chat_header", Label)
+            if not chat_input.disabled:
+                chat_input.placeholder = "Type a message..."
 
-        chat_input.disabled = not view.is_chat_open
-        chat_input.display = view.is_chat_open
-        chat_header.display = view.is_chat_open
+            # 5. Update Actions
+            action_bar = self.query_one("#action_bar", Horizontal)
+            await action_bar.remove_children()
 
-        if not chat_input.disabled:
-            chat_input.placeholder = "Type a message..."
+            seen_ids = set()
+            for action in player.possible_actions:
+                key = self.actions_map_key(action)
+                if key in seen_ids:
+                    continue
+                seen_ids.add(key)
 
-        # 5. Update Actions
-        action_bar = self.query_one("#action_bar", Horizontal)
-        await action_bar.remove_children()
+                btn = ActionButton(action.name, id=f"action_{key}")
+                btn.action_target = action
 
-        seen_ids = set()
-        for action in player.possible_actions:
-            key = self.actions_map_key(action)
-            # Ensure uniqueness even if duplicate actions exist
-            if key in seen_ids:
-                continue
-            seen_ids.add(key)
+                if "Kill" in action.name or "Hunt" in action.name:
+                    btn.variant = "error"
+                elif "Protect" in action.name:
+                    btn.variant = "success"
 
-            btn = ActionButton(action.name, id=f"action_{key}")
-            btn.action_target = action
-
-            # Contextual styling?
-            if "Kill" in action.name or "Hunt" in action.name:
-                btn.variant = "error"
-            elif "Protect" in action.name:
-                btn.variant = "success"
-
-            action_bar.mount(btn)
+                action_bar.mount(btn)
 
     def actions_map_key(self, action: Action) -> str:
         # create a semi-unique string for the key
