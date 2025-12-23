@@ -1,9 +1,10 @@
+from typing import Awaitable
 from typing import Callable
 from typing import Type, Any
 from smolagents import Tool
 from actions.Action import Action
 
-def action_to_tool(action: Action, action_executer: Callable[[Action], Any]) -> Tool:
+def action_to_tool(action: Action, action_executer: Callable[[Action], Awaitable[Any]]) -> Tool:
     """
     Converts an Action class into a smolagents Tool.
 
@@ -21,9 +22,7 @@ def action_to_tool(action: Action, action_executer: Callable[[Action], Any]) -> 
         inputs = action.tool_inputs
         output_type = action.tool_output_type
 
-        async def forward(self, **kwargs) -> Any:
-            # Create the action instance with the provided arguments
-            # Note: actorId is automatically filled from the adapter's context
-            return action_executer(action)
+        async def forward(self, **kwargs) -> None:
+            await action_executer(action)
 
     return GeneratedActionTool()
