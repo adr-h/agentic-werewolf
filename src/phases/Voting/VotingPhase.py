@@ -45,13 +45,11 @@ class VotingPhase(PhaseContract):
       timeout = 30
       interval = 10
       while timeout > 0:
-         print(f"DEBUG: VOTING TIMEOUT {timeout}")
-         timeout -= interval
          everyone_has_voted = state.votes.has_everyone_voted(state.characters)
          if (everyone_has_voted):
-            print("DEBUG: EVERYONE VOTED!")
             break
          else:
+            timeout -= interval
             await asyncio.sleep(interval)
 
 

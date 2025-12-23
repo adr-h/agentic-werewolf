@@ -17,7 +17,7 @@ import asyncio
 from ui.WerewolfApp import WerewolfApp
 
 
-def main():
+async def main():
    cast = get_cast()
 
    all_characters = [ pair[0] for pair in cast ]
@@ -42,8 +42,11 @@ def main():
       game_state=game_state
    )
 
-   app = WerewolfApp(game_engine=game_engine, players=all_players)
-   app.run()
+   # Start game loop
+   asyncio.create_task(game_engine.game_loop())
+
+   app = WerewolfApp(players=all_players)
+   await app.run_async()
 
 
 def get_cast() -> list[tuple[Character, Player]]:
@@ -106,4 +109,4 @@ def get_cast() -> list[tuple[Character, Player]]:
    ]
 
 if __name__ == "__main__":
-   main()
+   asyncio.run(main())

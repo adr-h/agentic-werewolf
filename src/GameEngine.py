@@ -1,5 +1,6 @@
 
 
+import asyncio
 from GameState import GameState
 from events.Event import Event
 from player.Player import Player
@@ -21,7 +22,6 @@ class GameEngine:
 
    async def game_loop(self):
       game_state = self.game_state
-
 
       try:
          while True:

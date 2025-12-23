@@ -12,6 +12,9 @@ from player.Player import Player
 from events.Event import EventView
 import asyncio
 
+class ActionButton(Button):
+    action_target: Action
+
 class WerewolfApp(App):
     CSS = """
     Screen {
@@ -87,9 +90,8 @@ class WerewolfApp(App):
 
     current_player_id = reactive("")
 
-    def __init__(self, game_engine: GameEngine, players: list[Player]):
+    def __init__(self, players: list[Player]):
         super().__init__()
-        self.game_engine = game_engine
         self.players = {p.id: p for p in players}
         # default to first player
         if players:
@@ -121,8 +123,7 @@ class WerewolfApp(App):
         yield Footer()
 
     async def on_mount(self) -> None:
-        # Start the game loop in the background
-        asyncio.create_task(self.game_engine.game_loop())
+        # Note: game_loop is now started externally
 
         # Setup DataTable columns
         table = self.query_one("#player_table", DataTable)
@@ -132,6 +133,9 @@ class WerewolfApp(App):
         # Wire up player updates to UI
         for player in self.players.values():
             player.on_update = self.on_player_update
+
+        # Initial refresh
+        await self.update_ui()
 
     def on_player_update(self):
         # Schedule the async update_ui on the event loop
@@ -226,8 +230,8 @@ class WerewolfApp(App):
                 continue
             seen_ids.add(key)
 
-            btn = Button(action.name, id=f"action_{key}")
-            btn.action_target = action # Monkey-patch action
+            btn = ActionButton(action.name, id=f"action_{key}")
+            btn.action_target = action
 
             # Contextual styling?
             if "Kill" in action.name or "Hunt" in action.name:
@@ -249,7 +253,9 @@ class WerewolfApp(App):
 
     async def apply_player_action(self, action: Action):
         try:
-            await self.game_engine.handle_action(action)
+            player = self.players.get(self.current_player_id)
+            if player:
+                await player.send_action(action)
             # Force a re-render/update so the player sees the result immediately
             self.notify(f"Action executed: {action.name}")
 
