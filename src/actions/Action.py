@@ -12,7 +12,7 @@ class Action:
    actorId: str
 
    tool_inputs: ClassVar[dict] = {}
-   tool_output_type: ClassVar[str] = "Event"
+   tool_output_type: ClassVar[str] = "string"
 
    @property
    def name(self) -> str:

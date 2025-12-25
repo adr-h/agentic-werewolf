@@ -18,9 +18,9 @@ class HuntAction(Action):
 
    @property
    def description(self) -> str:
-      return f"Marks {self.targetName} for hunting. If successful, {self.targetName} will be killed."
+      return f"Marks {self.targetName} for hunting. If successful, {self.targetName} will be killed at the end of the phase."
    tool_inputs = {}
-   tool_output_type = "None"
+   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
@@ -40,10 +40,10 @@ class MarkedForHuntEvent(Event):
       actor = state.get_character(self.actorId)
 
       if observer == actor:
-         return EventView(description=f"You are marking {target.name} for death ...")
+         return EventView(description=f"You are hunting {target.name} ...")
 
       if observer.role.faction == actor.role.faction:
-         return EventView(description=f"f{target.name} is marking ${actor.name} for death ...")
+         return EventView(description=f"{target.name} is being hunted by {actor.name} ...")
 
       return EventView(description=f"...")
 

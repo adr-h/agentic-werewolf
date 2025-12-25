@@ -4,10 +4,10 @@ class DoNothingTool(Tool):
    name = "do_nothing"
    description = "Stay silent and do nothing... for now."
    inputs = {}
-   output_type = None
+   output_type = "string"
 
    def __init__(self):
-      pass
+      super().__init__()
 
-   async def forward(self) -> None:
-      pass
+   def forward(self) -> str:
+      return "Did nothing."

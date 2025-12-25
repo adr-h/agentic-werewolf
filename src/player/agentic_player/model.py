@@ -3,6 +3,9 @@ import huggingface_hub.inference._generated.types.zero_shot_image_classification
 from typing import Literal
 import os
 from smolagents import OpenAIModel, LiteLLMModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 RecognisedModels = Literal["openai/gpt-4o", "qwen/qwen3-8b", "google/gemini-3-flash-preview", "anthropic/claude-opus-4.5"]
 
@@ -22,4 +25,5 @@ def create_agent(model_id: RecognisedModels) -> CodeAgent:
    return CodeAgent(
       model=create_model(model_id),
       tools=[],
+      verbosity_level=0,
    )

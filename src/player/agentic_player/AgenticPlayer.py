@@ -11,8 +11,8 @@ import string
 from typing import Literal, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from GameState import GameView
-    from Character import Character
+   from GameState import GameView
+   from Character import Character
 
 from actions.Action import Action
 from ..Player import Player
@@ -30,17 +30,19 @@ class AgenticPlayer(Player):
       self.name = f"agent_{name}"
       self.agent = create_agent(model_id)
 
-      print("creating asyncio")
+      print(f"[{self.name}] Initializing AgenticPlayer...")
       asyncio.create_task(self.agent_loop())
+
+   def log_message(self, message: str):
+      with open("agent.log", "a") as f:
+         f.write(f"[{self.name}] {message}\n")
 
    async def agent_loop(self) -> None:
       interval = 5
       # Decide on an action every interval until the game ends.
       is_end_of_game = False
       while not is_end_of_game:
-         print("awaiting action")
          await self.decide_action()
-         print("action decided")
          is_end_of_game = self.current_game_view and isinstance(self.current_game_view.phase, GameOverPhase)
          await asyncio.sleep(interval)
 
@@ -70,16 +72,33 @@ class AgenticPlayer(Player):
          add_base_tools=False
       )
 
-      res = self.agent.run(f"""
-      You are an agent that plays the social deception game "Werewolf".
+      self.log_message("Thinking...")
+      # Run the synchronous agent.run in a separate thread to avoid blocking the event loop
+      try:
+         res = await asyncio.to_thread(
+            self.agent.run,
+            f"""
+            You are an agent playing "Werewolf".
 
-      Your current role is as a "{self.character.role.name}".
-      {self.character.role.description}
+            TECHNICAL RULES:
+            1. You MUST use one of the provided tools to take an action.
+            2. If you don't want to do anything, call the 'do_nothing' tool.
+            3. All tool calls MUST be wrapped in <code></code> blocks.
+            4. When you are finished with your actions for this turn, you MUST call 'final_answer' with a brief status message to end your thinking process.
 
-      The current game state is as follows:
-      {self.current_game_view}
+            ROLE:
+            Your character is "{self.character.role.name}".
+            {self.character.role.description}
 
-      Decide on a course of action given the current game state and your role.
-      """)
+            CURRENT STATE:
+            {self.current_game_view}
 
-      print(res.messages)
+            Based on your role and the state above, decide which tool to call.
+            """
+         )
+         self.log_message(f"Final decision: {res}")
+      except Exception as e:
+         self.log_message(f"Error during decide_action: {e}")
+         import traceback
+         with open("agent.log", "a") as f:
+            traceback.print_exc(file=f)

@@ -24,7 +24,7 @@ class VoteAction(Action):
          return "Abstain from voting for this round"
       return f"Vote for {self.targetName} to be executed this round"
    tool_inputs = {}
-   tool_output_type = "None"
+   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       # TODO: abstraining from voting should be its own action!

@@ -21,7 +21,7 @@ class AutopsyAction(Action):
    def description(self) -> str:
       return f"Performs an autopsy on {self.targetName} to reveal their role."
    tool_inputs = {}
-   tool_output_type = "None"
+   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
