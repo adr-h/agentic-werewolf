@@ -12,7 +12,8 @@ name = "agentic-werewolf"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "openai-agents" },
+    { name = "openai-agents", extra = ["litellm"] },
+    { name = "pydantic" },
     { name = "smolagents", extra = ["litellm", "toolkit"] },
     { name = "textual" },
     { name = "textual-dev" },
@@ -20,7 +21,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "openai-agents", specifier = ">=0.5.0" },
+    { name = "openai-agents", extras = ["litellm"], specifier = ">=0.5.0" },
+    { name = "pydantic", specifier = ">=2.12.4" },
     { name = "smolagents", extras = ["litellm", "toolkit"], specifier = ">=1.23.0" },
     { name = "textual", specifier = ">=6.8.0" },
     { name = "textual-dev", specifier = ">=1.8.0" },
@@ -1410,6 +1412,11 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/00/b3/c25c3b3084c113ffbd161c37ed7c02e0cc1296eb2f2d582d85c461f60c7a/openai_agents-0.5.0.tar.gz", hash = "sha256:776dde4025442164e3e860ff5b239b5c0ebc30f9445b0d75295c385a8ca1f696", size = 1958702 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d5/f5/c43a84a64aa3328c628cc19365dc514ce02abf31e31c861ad489d6d3075b/openai_agents-0.5.0-py3-none-any.whl", hash = "sha256:5ef062273815de197315ec760f571625d0f2766ceb83ab189ba6cdd9b26a10e9", size = 223272 },
+]
+
+[package.optional-dependencies]
+litellm = [
+    { name = "litellm" },
 ]
 
 [[package]]

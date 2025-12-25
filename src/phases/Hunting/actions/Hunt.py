@@ -14,11 +14,11 @@ class HuntAction(Action):
 
    @property
    def name(self) -> str:
-      return f"Hunt {self.targetName}"
+      return f"Mark {self.targetName} for Hunting"
 
    @property
    def description(self) -> str:
-      return f"Marks {self.targetName} for hunting. If successful, {self.targetName} will be killed at the end of the phase."
+      return f"Marks {self.targetName} for hunting. If successful, {self.targetName} will be killed at the end of the Hunting phase."
    tool_inputs = {}
    tool_output_type = "string"
 

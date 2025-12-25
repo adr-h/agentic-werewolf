@@ -75,14 +75,14 @@ class WerewolfRole():
        - do nothing
      - the player with the most votes in this phase will be eliminated.
 
-   During the "Hunting Phase",
-     - you can:
-       - choose to hunt another player
-       - choose to do nothing
-     - you cannot send chat messages.
-     - you cannot kill a player who has been protected by a Bodyguard.
-     - only ONE player can be killed per hunting phase - if multiple werewolves choose to hunt, only the latest chosen player will be killed.
-   """
+    During the "Hunting Phase",
+      - you can nominate ONE player to hunt.
+      - you can choose to do nothing.
+      - you cannot send chat messages.
+      - you cannot kill a player who has been protected by a Bodyguard.
+      - only ONE player can be killed per hunting phase across all werewolves.
+      - IMPORTANT: If you nominate multiple players in succession, only the LATEST nomination will be considered. Choose your target decisively and call the tool only once. Calling it for multiple separate targets accomplishes nothing.
+    """
 
 
    can_kill = True # TODO: a trait system so this can scale

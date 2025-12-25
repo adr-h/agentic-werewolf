@@ -1,10 +1,12 @@
+from agents.run import Runner
+from agents.agent import Agent
 from phases.GameOverPhase import GameOverPhase
-from player.agentic_player.tools.DoNothingTool import DoNothingTool
 from smolagents import Tool
 from player.agentic_player.model import create_agent
-from .model import RecognisedModels, CodeAgent
+from .model import RecognisedModels
 from .tools.ToolAdapter import action_to_tool
-from .tools.SendChatMessageTool import SendChatMessageTool
+from .tools.DoNothingTool import create_do_nothing_tool
+from .tools.SendChatMessageTool import create_send_chat_message_tool
 import asyncio
 import random
 import string
@@ -21,7 +23,7 @@ class AgenticPlayer(Player):
    id: str
    name: str
    type: Literal["agent_player"] = "agent_player"
-   agent: CodeAgent
+   agent: Agent
 
    def __init__(self, name: str, character_id: str, character: "Character", model_id: RecognisedModels):
       self.id = 'agent_' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
@@ -34,7 +36,7 @@ class AgenticPlayer(Player):
       asyncio.create_task(self.agent_loop())
 
    def log_message(self, message: str):
-      with open("agent.log", "a") as f:
+      with open(f"{self.name}.log", "a") as f:
          f.write(f"[{self.name}] {message}\n")
 
    async def agent_loop(self) -> None:
@@ -53,13 +55,13 @@ class AgenticPlayer(Player):
 
       if self.current_game_view and self.current_game_view.is_chat_open:
          tools.append(
-            SendChatMessageTool(
+            create_send_chat_message_tool(
                chat_sender=self.send_chat
             )
          )
 
       tools.append(
-         DoNothingTool()
+         create_do_nothing_tool()
       )
 
       return tools
@@ -67,36 +69,36 @@ class AgenticPlayer(Player):
    async def decide_action(self) -> None:
       tools = self.get_tools()
 
-      self.agent._setup_tools(
-         tools=tools,
-         add_base_tools=False
-      )
+      self.agent.tools.clear()
+      self.agent.tools.extend([t for t in tools])
 
       self.log_message("Thinking...")
-      # Run the synchronous agent.run in a separate thread to avoid blocking the event loop
       try:
-         res = await asyncio.to_thread(
-            self.agent.run,
-            f"""
-            You are an agent playing "Werewolf".
-
-            TECHNICAL RULES:
-            1. You MUST use one of the provided tools to take an action.
-            2. If you don't want to do anything, call the 'do_nothing' tool.
-            3. All tool calls MUST be wrapped in <code></code> blocks.
-            4. When you are finished with your actions for this turn, you MUST call 'final_answer' with a brief status message to end your thinking process.
-
+         #    TECHNICAL RULES:
+         #    1. You MUST use one of the provided tools to take an action.
+         #    2. If you don't want to do anything, call the 'do_nothing' tool.
+         #    3. All tool calls MUST be wrapped in <code></code> blocks.
+         #    4. When you are finished with your actions for this turn, you MUST call 'final_answer' with a brief status message to end your thinking process.
+         res = await Runner.run(
+            starting_agent=self.agent,
+            input=f"""
             ROLE:
-            Your character is "{self.character.role.name}".
+            Your character's name is "{self.character.name}".
+            Your character's role is "{self.character.role.name}".
             {self.character.role.description}
 
-            CURRENT STATE:
+            CURRENT_PHASE: {self.current_game_view and self.current_game_view.phase.type}
+
+            VISIBLE_GAME_STATE:
             {self.current_game_view}
 
-            Based on your role and the state above, decide which tool to call.
-            """
+            Based on your role and the state above, first, summarise your past actions.
+            Then, decide which tool to call.
+            """,
+            max_turns=2,
          )
-         self.log_message(f"Final decision: {res}")
+
+         self.log_message("output:"+res.final_output_as(str))
       except Exception as e:
          self.log_message(f"Error during decide_action: {e}")
          import traceback

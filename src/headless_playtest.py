@@ -31,7 +31,8 @@ def get_cast():
         name=werewolf_1.name,
         character_id=werewolf_1.id,
         character=werewolf_1,
-        model_id="openai/gpt-4o"
+        # model_id="openai/gpt-4o"
+        model_id="anthropic/claude-opus-4.5"
     )
 
     return [(villager_1, player_1), (villager_2, player_2), (werewolf_1, player_5)]
