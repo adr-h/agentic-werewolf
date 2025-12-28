@@ -35,12 +35,30 @@ class GameEngine:
                break
 
             game_state.phase = next_phase
+
+         self.on_game_end()
       except Exception as e:
          import traceback
          traceback.print_exc()
          # Also try to alert players of crash?
          print(f"GAME ENGINE CRASH: {e}")
 
+   def on_game_end(self):
+      import json
+      from datetime import datetime
+
+      timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M")
+      filename = f"{timestamp}-game.log"
+
+      try:
+         data = self.game_state.to_dict()
+         with open(filename, "w") as f:
+            json.dump(data, f, indent=2)
+         print(f"Game state saved to {filename}")
+      except Exception as e:
+         print(f"FAILED TO SAVE GAME STATE: {e}")
+         import traceback
+         traceback.print_exc()
 
    def on_update(self, game_state: GameState, latest_event: Event | None):
       self.alert_all_players(
@@ -67,7 +85,7 @@ class GameEngine:
       # Apply the event to the state
       self.game_state.apply_event(event)
 
-   async def handle_chat(self, player: Player, message: str):
+   async def handle_chat(self, player: Player, message: str, rationale: str | None = None, strategy: str | None = None):
       from actions.Chat import ChatAction
-      action = ChatAction(actorId=player.character_id, message=message)
+      action = ChatAction(actorId=player.character_id, message=message, rationale=rationale, strategy=strategy)
       await self.handle_action(action)

@@ -19,8 +19,6 @@ class HuntAction(Action):
    @property
    def description(self) -> str:
       return f"Marks {self.targetName} for hunting. If successful, {self.targetName} will be killed at the end of the Hunting phase."
-   tool_inputs = {}
-   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
@@ -28,7 +26,7 @@ class HuntAction(Action):
       if (target.state == "dead"):
          raise Exception("Target is already dead; this should not have been allowed in the first place. Debug.")
 
-      return MarkedForHuntEvent(self.actorId, self.targetId)
+      return MarkedForHuntEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
 
 @dataclass
 class MarkedForHuntEvent(Event):

@@ -22,3 +22,9 @@ class AutopsyRegistry:
       else:
          return False
 
+   def to_dict(self):
+      import dataclasses
+      return {
+         "autopsy_relationships": {k: dataclasses.asdict(v) for k, v in self.autopsy_relationships.items()}
+      }
+

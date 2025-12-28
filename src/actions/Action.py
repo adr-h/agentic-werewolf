@@ -10,9 +10,7 @@ from events.Event import Event
 @dataclass
 class Action:
    actorId: str
-
-   tool_inputs: ClassVar[dict] = {}
-   tool_output_type: ClassVar[str] = "string"
+   rationale: str | None = field(default=None, kw_only=True)
 
    @property
    def name(self) -> str:

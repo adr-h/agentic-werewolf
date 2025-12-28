@@ -32,3 +32,9 @@ class ProtectionRegistry:
          False
       )
 
+   def to_dict(self):
+      import dataclasses
+      return {
+         "protection_relationships": {k: dataclasses.asdict(v) for k, v in self.protection_relationships.items()}
+      }
+

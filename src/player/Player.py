@@ -25,7 +25,7 @@ class Player(ABC):
 
    on_update: Callable[["Player"], None] | None = None
    on_action_sent: Callable[[Action], Coroutine[None, None, None]] | None = None
-   on_chat_sent: Callable[["Player", str], Coroutine[None, None, None]] | None = None
+   on_chat_sent: Callable[["Player", str, str | None, str | None], Coroutine[None, None, None]] | None = None
 
    def receive_update(self, game_view: GameView, actions: Sequence[Action], latest_event: None | EventView):
       self.current_game_view = game_view
@@ -36,9 +36,9 @@ class Player(ABC):
       if self.on_update:
          self.on_update(self)
 
-   async def send_chat(self, message: str):
+   async def send_chat(self, message: str, rationale: str | None = None, strategy: str | None = None):
       if self.on_chat_sent:
-         await self.on_chat_sent(self, message)
+         await self.on_chat_sent(self, message, rationale, strategy)
 
    async def send_action(self, action: Action):
       if self.on_action_sent:

@@ -23,3 +23,8 @@ class PhaseContract(ABC):
    @abstractmethod
    def get_possible_actions(self, state: "GameState", actor: "Character") -> Sequence[Action]:
       return []
+
+   def to_dict(self):
+      return {
+         "type": self.__class__.__name__
+      }

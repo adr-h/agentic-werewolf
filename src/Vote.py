@@ -54,5 +54,11 @@ class VoteRegistry:
 
       return winner
 
+   def to_dict(self):
+      import dataclasses
+      return {
+         "votes": {k: dataclasses.asdict(v) for k, v in self.votes.items()}
+      }
+
    # def remove_vote(self, voter_id: str):
    #    votes[]

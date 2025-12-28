@@ -43,6 +43,15 @@ class Character:
          state = self.state
       )
 
+   def to_dict(self):
+      return {
+         "id": self.id,
+         "name": self.name,
+         "role": self.role.to_dict(),
+         "state": self.state,
+         "observed": self.observed
+      }
+
 
    # async def act(self):
    #    # events_since_last_turn = sorted_events

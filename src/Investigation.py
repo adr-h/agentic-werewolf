@@ -22,3 +22,9 @@ class InvestigationRegistry:
       else:
          return False
 
+   def to_dict(self):
+      import dataclasses
+      return {
+         "investigation_relationships": {k: dataclasses.asdict(v) for k, v in self.investigation_relationships.items()}
+      }
+

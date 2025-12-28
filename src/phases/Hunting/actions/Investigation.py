@@ -21,8 +21,6 @@ class InvestigateAction(Action):
    @property
    def description(self) -> str:
       return f"Investigates {self.targetName} to reveal their role."
-   tool_inputs = {}
-   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
@@ -34,7 +32,7 @@ class InvestigateAction(Action):
       if (target.state == "dead"):
          raise Exception(f"Target is dead; this should not have been allowed in the first place. Debug.")
 
-      return InvestigationEvent(self.actorId, self.targetId)
+      return InvestigationEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
 
 @dataclass
 class InvestigationEvent(Event):

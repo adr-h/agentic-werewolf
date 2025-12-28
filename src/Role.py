@@ -51,6 +51,12 @@ class NormalVillagerRole():
          faction = "villagers"
       )
 
+   def to_dict(self):
+      return {
+         "name": self.name,
+         "faction": self.faction
+      }
+
 class WerewolfRole():
    name = "Werewolf"
    faction: Faction = "werewolves"
@@ -102,6 +108,12 @@ class WerewolfRole():
          name = "Normal Villager",
          faction = "villagers"
       )
+
+   def to_dict(self):
+      return {
+         "name": self.name,
+         "faction": self.faction
+      }
 
 class Bodyguard(NormalVillagerRole):
    name = "Bodyguard"

@@ -20,8 +20,6 @@ class AutopsyAction(Action):
    @property
    def description(self) -> str:
       return f"Performs an autopsy on {self.targetName} to reveal their role."
-   tool_inputs = {}
-   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
@@ -33,7 +31,7 @@ class AutopsyAction(Action):
       if (target.state != "dead"):
          raise Exception(f"Target is not dead; this should not have been allowed in the first place. Debug.")
 
-      return AutopsyEvent(self.actorId, self.targetId)
+      return AutopsyEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
 
 @dataclass
 class AutopsyEvent(Event):

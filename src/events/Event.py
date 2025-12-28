@@ -1,3 +1,4 @@
+import dataclasses
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -20,6 +21,8 @@ class Event:
     They are immutable data until applied to GameState.
     """
     timestamp: datetime = field(default_factory=datetime.now, kw_only=True)
+    rationale: str | None = field(default=None, kw_only=True)
+    strategy: str | None = field(default=None, kw_only=True)
 
     # TODO: for now, this is intended to directly mutate GameState to make implementation easier.
     # But to make "undo" possible, it will make more sense to have `apply` return a new GameState
@@ -33,14 +36,14 @@ class Event:
     # def undo(self, state: GameState) -> None:
     #     raise NotImplementedError("Event.undo() must be implemented by subclasses.")
 
-    # def to_dict(self) -> Dict[str, Any]:
-    #     """
-    #     Serialize the event for logging, networking, or replay.
-    #     """
-    #     return {
-    #         "type": self.__class__.__name__,
-    #         "timestamp": self.timestamp.isoformat(),
-    #     }
+    def to_dict(self) -> dict:
+        """
+        Serialize the event for logging, networking, or replay.
+        """
+        data = dataclasses.asdict(self)
+        data["type"] = self.__class__.__name__
+        data["timestamp"] = self.timestamp.isoformat()
+        return data
 
     # def _fields_dict(self) -> Dict[str, Any]:
     #     """

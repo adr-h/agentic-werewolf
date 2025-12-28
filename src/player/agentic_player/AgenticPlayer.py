@@ -91,11 +91,13 @@ class AgenticPlayer(Player):
 
             VISIBLE_GAME_STATE:
             {self.current_game_view}
+            Note: this is the visible game state, not the full, "true" game state.
+            All players will appear to be "Normal Villagers" by default, even if they are werewolves/special roles (unless you have the investigation ability and have investigated them)
 
             Based on your role and the state above, first, summarise your past actions.
-            Then, decide which tool to call.
+            Then, decide which tool to call. Do not overthink this.
             """,
-            max_turns=2,
+            max_turns=5,
          )
 
          self.log_message("output:"+res.final_output_as(str))

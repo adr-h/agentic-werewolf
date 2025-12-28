@@ -51,74 +51,49 @@ async def main():
 
 
 def get_cast() -> list[tuple[Character, Player]]:
-   villager_1 = Character(
-      name="Julio",
-      role=NormalVillagerRole(),
-      state="alive",
-   )
-   player_1 = ManualPlayer(
-      name=villager_1.name,
-      character_id=villager_1.id,
-      character=villager_1
-   )
+    villager_1 = Character(name="Julio", role=NormalVillagerRole(), state="alive")
+    player_1 = AgenticPlayer(
+        name=villager_1.name,
+        character_id=villager_1.id,
+        character=villager_1,
+        model_id="openai/gpt-4o"
+    )
 
-   villager_2 = Character(
-      name="Fernandez",
-      role=NormalVillagerRole(),
-      state="alive",
-   )
-   player_2 = ManualPlayer(
-      name=villager_2.name,
-      character_id=villager_2.id,
-      character=villager_2
-   )
+    villager_2 = Character(name="Fernandez", role=NormalVillagerRole(), state="alive")
+    player_2 = AgenticPlayer(
+        name=villager_2.name,
+        character_id=villager_2.id,
+        character=villager_2,
+        model_id="openai/gpt-4o"
+    )
 
-   villager_3 = Character(
-      name="Rodriguez",
-      role=NormalVillagerRole(),
-      state="alive",
-   )
-   player_3 = ManualPlayer(
-      name=villager_3.name,
-      character_id=villager_3.id,
-      character=villager_3
-   )
+    villager_3 = Character(name="Carlos", role=NormalVillagerRole(), state="alive")
+    player_3 = AgenticPlayer(
+        name=villager_3.name,
+        character_id=villager_3.id,
+        character=villager_3,
+        model_id="openai/gpt-4o"
+    )
 
-   villager_4 = Character(
-      name="Mikail",
-      role=NormalVillagerRole(),
-      state="alive",
-   )
-   player_4 = ManualPlayer(
-      name=villager_4.name,
-      character_id=villager_4.id,
-      character=villager_4
-   )
+    villager_4 = Character(name="Luis", role=NormalVillagerRole(), state="alive")
+    player_4 = AgenticPlayer(
+        name=villager_4.name,
+        character_id=villager_4.id,
+        character=villager_4,
+        model_id="openai/gpt-4o"
+    )
 
-   werewolf_1 = Character(
-      name="Yuri",
-      role=WerewolfRole(),
-      state="alive",
-   )
-   player_5 = AgenticPlayer(
-      name=werewolf_1.name,
-      character_id=werewolf_1.id,
-      character=werewolf_1,
-      model_id="openai/gpt-4o"
-   )
-   # player_5 = ManualPlayer(
-   #    name=werewolf_1.name,
-   #    character_id=werewolf_1.id,
-   #    character=werewolf_1
-   # )
+    werewolf_1 = Character(name="Yuri", role=WerewolfRole(), state="alive")
+    player_5 = AgenticPlayer(
+        name=werewolf_1.name,
+        character_id=werewolf_1.id,
+        character=werewolf_1,
+        # model_id="openai/gpt-4o"
+        model_id="anthropic/claude-opus-4.5"
+    )
 
-   return [
-      (villager_1, player_1),
-      (villager_2, player_2),
-      (villager_3, player_3),
-      (villager_4, player_4),
-      (werewolf_1, player_5)
-   ]
+    return [(villager_1, player_1), (villager_2, player_2), (villager_3, player_3), (villager_4, player_4), (werewolf_1, player_5)]
+
 
 if __name__ == "__main__":
    asyncio.run(main())

@@ -21,10 +21,36 @@ load_dotenv()
 
 def get_cast():
     villager_1 = Character(name="Julio", role=NormalVillagerRole(), state="alive")
-    player_1 = ManualPlayer(name=villager_1.name, character_id=villager_1.id, character=villager_1)
+    player_1 = AgenticPlayer(
+        name=villager_1.name,
+        character_id=villager_1.id,
+        character=villager_1,
+        model_id="openai/gpt-4o"
+    )
 
     villager_2 = Character(name="Fernandez", role=NormalVillagerRole(), state="alive")
-    player_2 = ManualPlayer(name=villager_2.name, character_id=villager_2.id, character=villager_2)
+    player_2 = AgenticPlayer(
+        name=villager_2.name,
+        character_id=villager_2.id,
+        character=villager_2,
+        model_id="openai/gpt-4o"
+    )
+
+    villager_3 = Character(name="Carlos", role=NormalVillagerRole(), state="alive")
+    player_3 = AgenticPlayer(
+        name=villager_3.name,
+        character_id=villager_3.id,
+        character=villager_3,
+        model_id="openai/gpt-4o"
+    )
+
+    villager_4 = Character(name="Luis", role=NormalVillagerRole(), state="alive")
+    player_4 = AgenticPlayer(
+        name=villager_4.name,
+        character_id=villager_4.id,
+        character=villager_4,
+        model_id="openai/gpt-4o"
+    )
 
     werewolf_1 = Character(name="Yuri", role=WerewolfRole(), state="alive")
     player_5 = AgenticPlayer(
@@ -35,7 +61,7 @@ def get_cast():
         model_id="anthropic/claude-opus-4.5"
     )
 
-    return [(villager_1, player_1), (villager_2, player_2), (werewolf_1, player_5)]
+    return [(villager_1, player_1), (villager_2, player_2), (villager_3, player_3), (villager_4, player_4), (werewolf_1, player_5)]
 
 async def main():
     if "OPENROUTER_API_KEY" not in os.environ:
@@ -66,6 +92,10 @@ async def main():
     def on_event(state: GameState, event: Event | None):
         if event:
             print(f"\n[EVENT] {event}")
+            if event.rationale:
+                print(f"  > Rationale: {event.rationale}")
+            if event.strategy:
+                print(f"  > Strategy: {event.strategy}")
         print(f"[PHASE] Current phase: {state.phase.__class__.__name__}")
 
     game_state.subscribe(on_event)

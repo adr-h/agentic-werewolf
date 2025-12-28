@@ -71,4 +71,18 @@ class GameState:
 
       return character
 
+   def to_dict(self):
+      return {
+         "characters": [c.to_dict() for c in self.characters],
+         "votes": self.votes.to_dict(),
+         "hunts": self.hunts.to_dict(),
+         "protection": self.protection.to_dict(),
+         "autopsy": self.autopsy.to_dict(),
+         "investigations": self.investigations.to_dict(),
+         "events": [e.to_dict() for e in self.events],
+         "phase": self.phase.to_dict(),
+         "winners": self.winners,
+         "is_chat_open": self.is_chat_open
+      }
+
 Subscriber = Callable[[GameState, Event | None], None]

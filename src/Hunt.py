@@ -19,3 +19,9 @@ class HuntingRegistry:
          return None
 
       return self.latest_hunt.prey_id
+
+   def to_dict(self):
+      import dataclasses
+      return {
+         "latest_hunt": dataclasses.asdict(self.latest_hunt) if self.latest_hunt else None
+      }

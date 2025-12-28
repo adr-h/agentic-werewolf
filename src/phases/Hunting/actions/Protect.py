@@ -19,8 +19,6 @@ class ProtectAction(Action):
    @property
    def description(self) -> str:
       return f"Protects {self.targetName} from being hunted."
-   tool_inputs = {}
-   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
       target = gameState.get_character(self.targetId)
@@ -28,7 +26,7 @@ class ProtectAction(Action):
       if (target.state == "dead"):
          raise Exception("Target is already dead; this should not have been allowed in the first place. Debug.")
 
-      return MarkedForProtectionEvent(self.actorId, self.targetId)
+      return MarkedForProtectionEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
 
 @dataclass
 class MarkedForProtectionEvent(Event):

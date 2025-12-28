@@ -9,6 +9,8 @@ from events.Event import Event, EventView
 @dataclass
 class ChatAction(Action):
    message: str
+   strategy: str | None = None
+
    @property
    def name(self) -> str:
       return "Chat"
@@ -16,11 +18,14 @@ class ChatAction(Action):
    @property
    def description(self) -> str:
       return "Sends a chat message to all players."
-   tool_inputs = {}
-   tool_output_type = "string"
 
    def resolve(self, gameState: GameState):
-      return ChatEvent(self.actorId, self.message)
+      return ChatEvent(
+         actorId=self.actorId,
+         message=self.message,
+         rationale=self.rationale,
+         strategy=self.strategy
+      )
 
 @dataclass
 class ChatEvent(Event):
