@@ -1,13 +1,10 @@
 import asyncio
-from dataclasses import dataclass
-from typing import Literal
 
 from GameState import GameState
 from WinConditions import get_win_result
 from events.VillagersWin import VillagersWinEvent
 from events.WerewolvesWin import WerewolvesWinEvent
 
-from phases.Hunting.actions.Autopsy import AutopsyAction
 from phases.Hunting.actions.Hunt import HuntAction
 from phases.Hunting.actions.Protect import ProtectAction
 from phases.Hunting.events.HuntingEndsEvent import HuntingEndsEvent
@@ -65,14 +62,12 @@ class HuntingPhase(PhaseContract):
       return DiscussionPhase()
 
    def get_possible_actions(self, state, actor):
+      if actor.state == "dead":
+         return []
+
       living_characters = [
          character for character in state.characters
          if character.state == "alive"
-      ]
-
-      dead_characters = [
-         character for character in state.characters
-         if character.state == "dead"
       ]
 
       if actor.role.can_kill:
@@ -94,17 +89,5 @@ class HuntingPhase(PhaseContract):
             )
             for char in living_characters
          ]
-
-      # TODO: move autopsy ability to the Discussion phase?
-      if actor.role.can_perform_autopsy and not state.autopsy.has_already_performed_autopsy(actor.id):
-         return [
-            AutopsyAction(
-               targetId = char.id,
-               targetName = char.name,
-               actorId = actor.id
-            )
-            for char in dead_characters
-         ]
-
 
       return []

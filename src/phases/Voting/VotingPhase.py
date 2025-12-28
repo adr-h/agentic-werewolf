@@ -54,6 +54,9 @@ class VotingPhase(PhaseContract):
 
 
    def get_possible_actions(self, state, actor) -> Sequence[Action]:
+      if actor.state == "dead":
+         return []
+
       living_characters_excluding_self = [
          c for c in state.characters if c.state != "dead" and c.id != actor.id
       ]
@@ -66,14 +69,14 @@ class VotingPhase(PhaseContract):
          ) for t in living_characters_excluding_self
       ]
 
-      actions.append(
-         # TODO: a dedicated "Abstain" event instead
-         VoteAction(
-            actorId = actor.id,
-            targetId = None,
-            targetName = None
-         )
-      )
+      # actions.append(
+      #    # TODO: a dedicated "Abstain" event instead
+      #    VoteAction(
+      #       actorId = actor.id,
+      #       targetId = None,
+      #       targetName = None
+      #    )
+      # )
 
       return actions
 

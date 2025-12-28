@@ -1,8 +1,12 @@
+from phases.Hunting.actions.Autopsy import AutopsyAction
 import asyncio
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, TYPE_CHECKING
 
-from GameState import GameState
+if TYPE_CHECKING:
+   from Character import Character
+   from GameState import GameState
+
 from actions.Chat import ChatAction
 from phases.Discussion.events.ChatReminderEvent import ChatReminderEvent
 
@@ -15,7 +19,7 @@ class DiscussionPhase(PhaseContract):
    type = "discussion"
    time = TimeOfDay.morning
 
-   async def run(self, state: GameState):
+   async def run(self, state: "GameState"):
       state.apply_event(ChatOpenedEvent())
 
       # give all players time to make their decisions; check every 5 secs
@@ -27,12 +31,28 @@ class DiscussionPhase(PhaseContract):
          timeout -= interval
          await asyncio.sleep(interval)
 
-   async def next(self, state: GameState):
+   async def next(self, state: "GameState"):
       state.apply_event(ChatClosedEvent())
       from phases.Voting.VotingPhase import VotingPhase
       return VotingPhase()
 
-   def get_possible_actions(self, state, actor):
-      return [
-         # chatting is a special action initiated by Players themselves; no need to return anything here
+   def get_possible_actions(self, state: "GameState", actor: "Character"):
+      if actor.state == "dead":
+         return []
+
+      dead_characters = [
+         character for character in state.characters
+         if character.state == "dead"
       ]
+
+      if actor.role.can_perform_autopsy and not state.autopsy.has_already_performed_autopsy(actor.id):
+         return [
+            AutopsyAction(
+               targetId = char.id,
+               targetName = char.name,
+               actorId = actor.id
+            )
+            for char in dead_characters
+         ]
+
+      return []

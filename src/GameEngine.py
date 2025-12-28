@@ -21,20 +21,18 @@ class GameEngine:
          player.on_chat_sent = self.handle_chat
 
    async def game_loop(self):
-      game_state = self.game_state
-
       try:
          while True:
-            self.alert_all_players(game_state, None)
-            current_phase = game_state.phase
+            self.alert_all_players(self.game_state, None)
+            current_phase = self.game_state.phase
 
-            await current_phase.run(state = game_state)
+            await current_phase.run(state = self.game_state)
 
-            next_phase = await current_phase.next(game_state)
+            next_phase = await current_phase.next(self.game_state)
             if next_phase is None:
                break
 
-            game_state.phase = next_phase
+            self.game_state.phase = next_phase
 
          self.on_game_end()
       except Exception as e:

@@ -20,6 +20,7 @@ class ChatAction(Action):
       return "Sends a chat message to all players."
 
    def resolve(self, gameState: GameState):
+
       return ChatEvent(
          actorId=self.actorId,
          message=self.message,

@@ -87,7 +87,9 @@ class WerewolfRole():
       - you cannot send chat messages.
       - you cannot kill a player who has been protected by a Bodyguard.
       - only ONE player can be killed per hunting phase across all werewolves.
-      - IMPORTANT: If you nominate multiple players in succession, only the LATEST nomination will be considered. Choose your target decisively and call the tool only once. Calling it for multiple separate targets accomplishes nothing.
+      - IMPORTANT: only the LATEST nomination by a werewolf will be eliminated at the end of the hunting phase.
+         - i.e: if there are two werewolves, and they each nominate to hunt different targets, only the latest nominated prey will actually be hunted
+         - Therefore, choose your target decisively, cooperate with your fellow Werewolves, and aim to call the tool only once per phase for the Werewolves.
     """
 
 
@@ -173,7 +175,9 @@ class Detective(NormalVillagerRole):
        - accuse another player of being a Werewolf.
        - defend yourself convincingly when accused.
        - ask sharp questions to expose contradictions or nervous behavior.
-       - choose to either share your foresight findings or keep them private
+       - choose to either share your foresight findings and reveal your role as a Detective
+         in order to turn the tide of the conversation,
+         or keep private to avoid being targeted by werewolves
 
    During the "Voting Phase",
      - you are not allowed to send chat messages.
@@ -187,6 +191,7 @@ class Detective(NormalVillagerRole):
      - you can
        - choose to use foresight to identify the true roles of another player
          - this allows you to identify Werewolves that are pretending to be villagers
+         - note that this can only be done once per Hunting Phase
        - choose to do nothing
    """
 
@@ -208,7 +213,30 @@ class Doctor(NormalVillagerRole):
    can_perform_autopsy = True
 
    description = """
-   TODO
+   You are a doctor in the social deception game "Werewolf".
+   You have the power to perform an autopsy on dead players once per Discussion Phase.
+
+   During the "Discussion Phase",
+     - perform an autopsy on dead players to uncover their true role
+       - note that this can only be performed once per Discussion Phase
+     - you can freely send chat messages, allowing you to:
+       - accuse another player of being a Werewolf.
+       - defend yourself convincingly when accused.
+       - ask sharp questions to expose contradictions or nervous behavior.
+       - choose to either share your autopsy findings and reveal your role as a Doctor
+         in order to turn the tide of the conversation,
+         or keep private to avoid being targeted by werewolves
+
+   During the "Voting Phase",
+     - you are not allowed to send chat messages.
+     - you can:
+       - vote for another player to be eliminated
+       - do nothing
+     - The player with the most votes in this phase will be eliminated.
+
+   During the "Hunting Phase",
+     - you cannot send chat messages.
+     - you can do nothing
    """
 
    def get_view(self, observer: "Character", observed: "Character"):

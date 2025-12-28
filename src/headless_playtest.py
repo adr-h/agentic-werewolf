@@ -1,4 +1,6 @@
 
+from Role import Detective
+from Role import Doctor
 import asyncio
 import os
 from GameEngine import GameEngine
@@ -25,7 +27,7 @@ def get_cast():
         name=villager_1.name,
         character_id=villager_1.id,
         character=villager_1,
-        model_id="openai/gpt-4o"
+        model_id="openai/gpt-oss-120b"
     )
 
     villager_2 = Character(name="Fernandez", role=NormalVillagerRole(), state="alive")
@@ -44,12 +46,12 @@ def get_cast():
         model_id="openai/gpt-4o"
     )
 
-    villager_4 = Character(name="Luis", role=NormalVillagerRole(), state="alive")
+    villager_4 = Character(name="Luis", role=Detective(), state="alive")
     player_4 = AgenticPlayer(
         name=villager_4.name,
         character_id=villager_4.id,
         character=villager_4,
-        model_id="openai/gpt-4o"
+        model_id="minimax/minimax-m2"
     )
 
     werewolf_1 = Character(name="Yuri", role=WerewolfRole(), state="alive")
@@ -57,11 +59,35 @@ def get_cast():
         name=werewolf_1.name,
         character_id=werewolf_1.id,
         character=werewolf_1,
-        # model_id="openai/gpt-4o"
         model_id="anthropic/claude-opus-4.5"
     )
 
-    return [(villager_1, player_1), (villager_2, player_2), (villager_3, player_3), (villager_4, player_4), (werewolf_1, player_5)]
+    doctor_1 = Character(name="Hyde", role=Doctor(), state="alive")
+    player_6 = AgenticPlayer(
+        name=doctor_1.name,
+        character_id=doctor_1.id,
+        character=doctor_1,
+        model_id="minimax/minimax-m2"
+    )
+
+
+    werewolf_2 = Character(name="Lee", role=WerewolfRole(), state="alive")
+    player_7 = AgenticPlayer(
+        name=werewolf_2.name,
+        character_id=werewolf_2.id,
+        character=werewolf_2,
+        model_id="minimax/minimax-m2"
+    )
+
+    return [
+        (villager_1, player_1),
+        (villager_2, player_2),
+        (villager_3, player_3),
+        (villager_4, player_4),
+        (werewolf_1, player_5),
+        (doctor_1, player_6),
+        (werewolf_2, player_7)
+    ]
 
 async def main():
     if "OPENROUTER_API_KEY" not in os.environ:

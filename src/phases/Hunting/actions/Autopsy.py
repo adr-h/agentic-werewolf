@@ -44,6 +44,7 @@ class AutopsyEvent(Event):
 
       if observer == actor:
          target_role = target.get_view(actor).role.name
+         print(f"{actor.name} performed an autopsy on {target.name} - and discovered that they are a '{target_role}'!")
          return EventView(description=f"You performed an autopsy on {target.name} - and discovered that they are a '{target_role}'!")
 
       return EventView(description=f"...")
