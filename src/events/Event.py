@@ -21,8 +21,7 @@ class Event:
     They are immutable data until applied to GameState.
     """
     timestamp: datetime = field(default_factory=datetime.now, kw_only=True)
-    rationale: str | None = field(default=None, kw_only=True)
-    strategy: str | None = field(default=None, kw_only=True)
+    correlation_id: str | None = field(default=None, kw_only=True)
 
     # TODO: for now, this is intended to directly mutate GameState to make implementation easier.
     # But to make "undo" possible, it will make more sense to have `apply` return a new GameState

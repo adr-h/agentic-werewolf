@@ -1,4 +1,5 @@
 
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar
@@ -11,6 +12,7 @@ from events.Event import Event
 class Action:
    actorId: str
    rationale: str | None = field(default=None, kw_only=True)
+   correlation_id: str = field(default_factory=lambda: str(uuid.uuid4()), kw_only=True)
 
    @property
    def name(self) -> str:

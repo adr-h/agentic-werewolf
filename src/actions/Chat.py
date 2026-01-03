@@ -24,8 +24,7 @@ class ChatAction(Action):
       return ChatEvent(
          actorId=self.actorId,
          message=self.message,
-         rationale=self.rationale,
-         strategy=self.strategy
+         correlation_id=self.correlation_id
       )
 
 @dataclass

@@ -118,10 +118,6 @@ async def main():
     def on_event(state: GameState, event: Event | None):
         if event:
             print(f"\n[EVENT] {event}")
-            if event.rationale:
-                print(f"  > Rationale: {event.rationale}")
-            if event.strategy:
-                print(f"  > Strategy: {event.strategy}")
         print(f"[PHASE] Current phase: {state.phase.__class__.__name__}")
 
     game_state.subscribe(on_event)

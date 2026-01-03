@@ -10,13 +10,23 @@ import json
 
 def action_to_tool(action: Action, action_executer: Callable[[Action], Awaitable[Any]]) -> FunctionTool:
     async def execute_action(ctx: RunContextWrapper[Any], args: str):
+        data = {}
         try:
             data = json.loads(args)
-            action.rationale = data.get("rationale")
+            if action.name != "Chat":
+                action.rationale = data.get("rationale")
         except json.JSONDecodeError:
             pass
 
-        await action_executer(action)
+        if action.name == "Chat":
+            # ChatAction is constructed in AgenticPlayer.send_chat
+            await action_executer(
+                message=data.get("message", args),
+                rationale=data.get("rationale"),
+                strategy=data.get("strategy")
+            )
+        else:
+            await action_executer(action)
 
     return FunctionTool(
         name=action.name.lower().replace(" ", "_"),

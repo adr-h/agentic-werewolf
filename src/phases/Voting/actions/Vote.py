@@ -27,13 +27,13 @@ class VoteAction(Action):
    def resolve(self, gameState: GameState):
       # TODO: abstraining from voting should be its own action!
       if (self.targetId is None):
-         return AbstainSucceededEvent(actorId=self.actorId, rationale=self.rationale)
+         return AbstainSucceededEvent(actorId=self.actorId, correlation_id=self.correlation_id)
 
       target = gameState.get_character(self.targetId)
       if (target.state == "dead"):
          raise Exception("Target is already dead; this should not have been allowed in the first place. Debug.")
 
-      return VoteSucceededEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
+      return VoteSucceededEvent(actorId=self.actorId, targetId=self.targetId, correlation_id=self.correlation_id)
 
 @dataclass
 class AbstainSucceededEvent(Event):

@@ -24,12 +24,14 @@ class AgenticPlayer(Player):
    name: str
    type: Literal["agent_player"] = "agent_player"
    agent: Agent
+   action_history: list[Action] = []
 
    def __init__(self, name: str, character_id: str, character: "Character", model_id: RecognisedModels):
       self.id = 'agent_' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
       self.character_id=character_id
       self.character = character
       self.name = f"agent_{name}"
+      self.action_history = []
       self.agent = create_agent(
          model_id=model_id,
          character_name=character.name,

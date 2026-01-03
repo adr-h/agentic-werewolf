@@ -32,7 +32,7 @@ class InvestigateAction(Action):
       if (target.state == "dead"):
          raise Exception(f"Target is dead; this should not have been allowed in the first place. Debug.")
 
-      return InvestigationEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
+      return InvestigationEvent(actorId=self.actorId, targetId=self.targetId, correlation_id=self.correlation_id)
 
 @dataclass
 class InvestigationEvent(Event):

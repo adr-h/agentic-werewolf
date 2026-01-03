@@ -26,7 +26,7 @@ class ProtectAction(Action):
       if (target.state == "dead"):
          raise Exception("Target is already dead; this should not have been allowed in the first place. Debug.")
 
-      return MarkedForProtectionEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
+      return MarkedForProtectionEvent(actorId=self.actorId, targetId=self.targetId, correlation_id=self.correlation_id)
 
 @dataclass
 class MarkedForProtectionEvent(Event):

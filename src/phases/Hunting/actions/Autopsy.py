@@ -31,7 +31,7 @@ class AutopsyAction(Action):
       if (target.state != "dead"):
          raise Exception(f"Target is not dead; this should not have been allowed in the first place. Debug.")
 
-      return AutopsyEvent(actorId=self.actorId, targetId=self.targetId, rationale=self.rationale)
+      return AutopsyEvent(actorId=self.actorId, targetId=self.targetId, correlation_id=self.correlation_id)
 
 @dataclass
 class AutopsyEvent(Event):
