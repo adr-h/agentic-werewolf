@@ -1,4 +1,5 @@
 import json
+import inspect
 from typing import Type, Callable, Any, Awaitable
 from dataclasses import fields, is_dataclass
 from agents import FunctionTool, RunContextWrapper
@@ -13,6 +14,13 @@ def command_to_tool(
     Converts a Command dataclass into a smolagents FunctionTool.
     """
     name = command_class.__name__.replace("Command", "").lower()
+
+    # Extract docstring or fallback to generic description
+    doc = command_class.__doc__
+    if doc:
+        description = inspect.cleandoc(doc)
+    else:
+        description = f"Performs the {name} action."
 
     # Introspect fields
     command_fields = fields(command_class)
@@ -69,7 +77,7 @@ def command_to_tool(
 
     return FunctionTool(
         name=name,
-        description=f"Performs the {name} action. Parameters: {', '.join(required)}",
+        description=description,
         on_invoke_tool=execute_wrapper,
         params_json_schema={
             "type": "object",
