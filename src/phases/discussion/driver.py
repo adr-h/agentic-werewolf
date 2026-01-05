@@ -1,6 +1,7 @@
+from phases.discussion.events import StartVotingEvent
+from phases.discussion.commands import SendChatMessageCommand
 from domain.Engine import EngineProtocol, UserInput, Timeout
-from domain.GameState import GameState
-from domain.Phase import VotingPhase
+from domain.ChatEvents import ChatSentEvent
 
 class DiscussionDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -8,13 +9,10 @@ class DiscussionDriver:
         Manages the Discussion Phase.
         Simple timer-based discussion.
         """
-        from phases.discussion.events import DiscussionStartedEvent
         # Extract initial time from current state if it's there, otherwise default
         initial_time = 30
         if hasattr(engine.state.phase, 'time_remaining'):
             initial_time = int(getattr(engine.state.phase, 'time_remaining'))
-
-        engine.apply(DiscussionStartedEvent(time_remaining=initial_time))
 
         engine.broadcast("Sun rises. It is day. Discuss who you suspect...")
 
@@ -42,10 +40,8 @@ class DiscussionDriver:
                             # If we want the driver to broadcast chat to UI, it needs to check event type.
                             # But ideally the engine or projection handles this.
                             # For parity with previous logic:
-                            from domain.ChatEvents import ChatSentEvent
-                            from domain.Command import SendChatMessageCommand
-                            if isinstance(e, ChatSentEvent) and isinstance(cmd, SendChatMessageCommand):
-                                engine.broadcast(f"{e.sender_name} says: {cmd.message}")
+                            if isinstance(e, ChatSentEvent):
+                                engine.broadcast(f"{e.sender_name} says: {e.message}")
                     case Timeout():
                         engine.broadcast("Discussion ends.")
                         break
@@ -55,5 +51,4 @@ class DiscussionDriver:
 
         # Transition to Voting
         engine.broadcast("It is time to vote.")
-        from phases.voting.events import VotingStartedEvent
-        engine.apply(VotingStartedEvent())
+        engine.apply(StartVotingEvent())

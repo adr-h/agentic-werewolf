@@ -1,3 +1,5 @@
+from phases.hunting.events import StartDiscussionEvent
+from phases.hunting.events import EndGameEvent
 from typing import Optional
 from domain.Character import Character
 from domain.Event import Event
@@ -27,6 +29,12 @@ def render_hunting_event(event: Event, viewer: Character) -> Optional[str]:
 
         case HuntExecutionEvent(target_id, target_name):
             return f"The werewolves hunted {target_name} during the night."
+
+        case EndGameEvent(winner):
+            return f"Game Over! The winner is: {winner}"
+
+        case StartDiscussionEvent():
+            return "The sun is rising. The village awakens."
 
         case _:
             return None

@@ -5,7 +5,7 @@ from typing import Optional
 from domain.Engine import EngineProtocol, UserInput, Timeout, InputResult
 from domain.GameState import GameState
 from domain.Event import Event
-from .logic import root_reducer
+from .reducer import root_reducer
 from .DriverFactory import get_driver_for
 
 class GameEngine(EngineProtocol):

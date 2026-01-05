@@ -1,19 +1,27 @@
+from domain.Phase import HuntingPhase
+from phases.voting.events import StartHuntEvent
+from domain.Phase import GameOverPhase
 from dataclasses import replace
 from domain.GameState import GameState
 from domain.Phase import VotingPhase
 from domain.Event import Event
-from .events import VotingStartedEvent, VoteCastEvent, VoteExecutionEvent
+from .events import EndGameEvent, VoteCastEvent, VoteExecutionEvent
 
 def apply_voting_logic(state: GameState, event: Event) -> GameState:
     match event:
-        case VotingStartedEvent():
-            return replace(state, phase=VotingPhase(current_ballots={}))
+        case StartHuntEvent():
+            return replace(state, phase=HuntingPhase())
+
+        case EndGameEvent(winner):
+            return replace(state, phase=GameOverPhase(winner=winner))
+
         case VoteCastEvent(voter_id, target_id):
             if isinstance(state.phase, VotingPhase):
                 new_ballots = {**state.phase.current_ballots, voter_id: target_id}
                 new_phase = replace(state.phase, current_ballots=new_ballots)
                 return replace(state, phase=new_phase)
             return state
+
         case VoteExecutionEvent(target_id):
             # Modular Death Logic for Voting
             new_characters = []

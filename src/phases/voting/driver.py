@@ -1,10 +1,11 @@
-from domain.Phase import GameOverPhase
+from phases.voting.events import StartHuntEvent
+from phases.voting.events import EndGameEvent
 from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
-from domain.Phase import HuntingPhase, VotingPhase
-from phases.voting.commands import CastVoteCommand
+from domain.Phase import VotingPhase
 from phases.voting.handlers import handle_command, resolve_winner
+from domain.ChatEvents import ChatSentEvent
 
 class VotingDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -12,11 +13,10 @@ class VotingDriver:
         Manages the Voting Phase loop.
         Ends when all alive players have voted OR timeout expires.
         """
-        from phases.voting.events import VotingStartedEvent
-        engine.apply(VotingStartedEvent())
+        engine.broadcast("Enough chit chat ... time to vote ...")
 
         import time
-        timeout_duration = 60.0
+        timeout_duration = 30.0
         deadline = time.monotonic() + timeout_duration
 
         while True:
@@ -41,10 +41,8 @@ class VotingDriver:
                         for e in events:
                             engine.apply(e)
 
-                            from domain.ChatEvents import ChatSentEvent
-                            from phases.voting.commands import SendChatMessageCommand
-                            if isinstance(e, ChatSentEvent) and isinstance(command, SendChatMessageCommand):
-                                engine.broadcast(f"{e.sender_name} says: {command.message}")
+                            if isinstance(e, ChatSentEvent):
+                                engine.broadcast(f"{e.sender_name} says: {e.message}")
 
                     case Timeout():
                         engine.broadcast("Time is up!")
@@ -69,11 +67,9 @@ class VotingDriver:
         # Go to Night Hunting
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            from phases.game_over.events import GameOverStartedEvent
-            engine.apply(GameOverStartedEvent(winner=winner))
+            engine.apply(EndGameEvent(winner=winner))
         else:
-            from phases.hunting.events import HuntingStartedEvent
-            engine.apply(HuntingStartedEvent())
+            engine.apply(StartHuntEvent())
 
     def _all_living_players_voted(self, state: GameState) -> bool:
         if not isinstance(state.phase, VotingPhase):

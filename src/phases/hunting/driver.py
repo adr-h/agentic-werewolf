@@ -1,3 +1,5 @@
+from phases.hunting.events import StartDiscussionEvent
+from phases.hunting.events import EndGameEvent
 from phases.hunting.events import HuntExecutionEvent
 from domain.Phase import GameOverPhase
 from engine.win_condition import get_win_result
@@ -13,9 +15,6 @@ class HuntingDriver:
         Manages the Night/Hunting Phase.
         Resolves when timeout expires.
         """
-        from phases.hunting.events import HuntingStartedEvent
-        engine.apply(HuntingStartedEvent())
-
         engine.broadcast("Night falls. The village sleeps. Special roles, wake up.")
 
         import time
@@ -66,8 +65,6 @@ class HuntingDriver:
         # Go to Day Discussion
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            from phases.game_over.events import GameOverStartedEvent
-            engine.apply(GameOverStartedEvent(winner=winner))
+            engine.apply(EndGameEvent(winner=winner))
         else:
-            from phases.discussion.events import DiscussionStartedEvent
-            engine.apply(DiscussionStartedEvent(time_remaining=30))
+            engine.apply(StartDiscussionEvent())

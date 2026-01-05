@@ -2,7 +2,11 @@ from dataclasses import dataclass
 from domain.Event import Event
 
 @dataclass(frozen=True)
-class HuntingStartedEvent(Event):
+class EndGameEvent(Event):
+    winner: str
+
+@dataclass(frozen=True)
+class StartDiscussionEvent(Event):
     pass
 
 @dataclass(frozen=True)

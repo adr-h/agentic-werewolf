@@ -1,9 +1,12 @@
+from phases.hunting.events import StartDiscussionEvent
+from domain.Phase import DiscussionPhase
+from domain.Phase import GameOverPhase
 from dataclasses import replace
 from domain.GameState import GameState
 from domain.Phase import HuntingPhase
 from domain.Event import Event
 from .events import (
-    HuntingStartedEvent,
+    EndGameEvent,
     HuntNominatedEvent,
     HuntExecutionEvent,
     ProtectionPlacedEvent,
@@ -12,8 +15,12 @@ from .events import (
 
 def apply_hunting_logic(state: GameState, event: Event) -> GameState:
     match event:
-        case HuntingStartedEvent():
-            return replace(state, phase=HuntingPhase())
+        case StartDiscussionEvent():
+            return replace(state, phase=DiscussionPhase())
+
+        case EndGameEvent(winner):
+            return replace(state, phase=GameOverPhase(winner=winner))
+
         case HuntNominatedEvent(actor_id, target_id):
             if isinstance(state.phase, HuntingPhase):
                 new_hunts = {**state.phase.pending_hunts, actor_id: target_id}

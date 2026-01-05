@@ -1,7 +1,9 @@
+from phases.discussion.projections import render_discussion_event
 from typing import List
 from dataclasses import dataclass
 from domain.GameState import GameState
 from domain.Role import project_role_view
+from domain.ChatEvents import ChatSentEvent
 
 # Modular Projections
 from phases.voting.projections import render_voting_event, project_view_details as voting_details
@@ -57,16 +59,9 @@ def project_game_view(state: GameState, viewer_id: str) -> GameView:
         if rendered:
             rendered_events.append(rendered)
         else:
-            from domain.ChatEvents import ChatSentEvent
             match event:
                 case ChatSentEvent(sender_id, sender_name, msg, _, _):
                     rendered_events.append(f"{sender_name}: {msg}")
-                case _:
-                    # Check for generic Started events
-                    class_name = event.__class__.__name__
-                    if class_name.endswith("StartedEvent"):
-                        phase_name = class_name.replace("StartedEvent", "")
-                        rendered_events.append(f"The game moved to {phase_name} phase.")
 
     me_view = next(p for p in players if p.id == viewer_id)
 

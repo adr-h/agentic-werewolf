@@ -1,3 +1,5 @@
+from phases.voting.events import EndGameEvent
+from phases.voting.events import StartHuntEvent
 from typing import Optional
 from domain.GameState import GameState
 from domain.Character import Character
@@ -14,6 +16,13 @@ def render_voting_event(event: Event, viewer: Character) -> Optional[str]:
                 return f"Player {voter_name} has cast a vote."
         case VoteExecutionEvent(target_id, target_name):
             return f"The village executed {target_name} after voting."
+
+        case EndGameEvent(winner):
+            return f"Game Over! The winner is: {winner}"
+
+        case StartHuntEvent():
+            return "The sun is rising. The village awakens."
+
         case _:
             return None
 

@@ -8,7 +8,6 @@ class DiscussionPhase:
     """
     Daytime discussion. No special state, just waiting for the timer or user consensus.
     """
-    time_remaining: int
     time: TimeOfDay = TimeOfDay.DAY
 
 @dataclass(frozen=True)
