@@ -1,9 +1,10 @@
+from phases.hunting.events import HuntExecutionEvent
 from domain.Phase import GameOverPhase
 from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import DiscussionPhase
-from domain.SystemEvents import ExecutionEvent, PhaseChangeEvent
+from domain.SystemEvents import PhaseChangeEvent
 from phases.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
 from phases.hunting.logic import resolve_hunting, handle_nominate_hunt, handle_protect, handle_investigate
 
@@ -58,7 +59,7 @@ class HuntingDriver:
         death_occurred = False
         for e in resolution_events:
             engine.apply(e)
-            if isinstance(e, ExecutionEvent):
+            if isinstance(e, HuntExecutionEvent):
                 death_occurred = True
                 engine.broadcast(f"Tragedy! {e.target_id} was found dead this morning.")
 

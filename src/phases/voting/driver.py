@@ -3,7 +3,7 @@ from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import HuntingPhase, VotingPhase
-from domain.SystemEvents import ExecutionEvent, PhaseChangeEvent
+from domain.SystemEvents import PhaseChangeEvent
 from phases.voting.commands import CastVoteCommand
 from phases.voting.logic import handle_cast_vote, resolve_winner
 
