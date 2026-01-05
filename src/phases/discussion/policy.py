@@ -1,7 +1,8 @@
 from typing import List, Type
 from domain.GameState import GameState
-from domain.Command import Command, SendChatMessageCommand
+from domain.Command import Command
 from domain.Phase import DiscussionPhase, VotingPhase
+from phases.discussion.commands import SendChatMessageCommand
 
 def get_available_commands(state: GameState, character_id: str) -> List[Type[Command]]:
     """

@@ -2,7 +2,7 @@ from typing import List, Type
 from domain.GameState import GameState
 from domain.Command import Command
 from domain.Phase import VotingPhase
-from .commands import CastVoteCommand
+from .commands import CastVoteCommand, SendChatMessageCommand
 
 def get_available_commands(state: GameState, character_id: str) -> List[Type[Command]]:
     """
@@ -13,6 +13,6 @@ def get_available_commands(state: GameState, character_id: str) -> List[Type[Com
         return []
 
     if isinstance(state.phase, VotingPhase):
-        return [CastVoteCommand]
+        return [CastVoteCommand, SendChatMessageCommand]
 
     return []

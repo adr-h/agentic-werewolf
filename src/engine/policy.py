@@ -14,8 +14,8 @@ def get_available_commands(state: GameState, character_id: str) -> List[Type[Com
     commands: List[Type[Command]] = []
 
     # Simple composition: Every feature gets a chance to offer commands
-    commands.extend(get_voting_commands(state, character_id))
-    commands.extend(get_hunting_commands(state, character_id))
     commands.extend(get_discussion_commands(state, character_id))
+    commands.extend(get_hunting_commands(state, character_id))
+    commands.extend(get_voting_commands(state, character_id))
 
     return commands

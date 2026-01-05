@@ -1,7 +1,6 @@
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import VotingPhase
-from domain.SystemEvents import PhaseChangeEvent
 
 class DiscussionDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -9,18 +8,21 @@ class DiscussionDriver:
         Manages the Discussion Phase.
         Simple timer-based discussion.
         """
+        from phases.discussion.events import DiscussionStartedEvent
+        # Extract initial time from current state if it's there, otherwise default
+        initial_time = 30
+        if hasattr(engine.state.phase, 'time_remaining'):
+            initial_time = int(getattr(engine.state.phase, 'time_remaining'))
+
+        engine.apply(DiscussionStartedEvent(time_remaining=initial_time))
+
         engine.broadcast("Sun rises. It is day. Discuss who you suspect...")
 
         import time
-        if hasattr(engine.state.phase, 'time_remaining'):
-            timeout_duration = float(getattr(engine.state.phase, 'time_remaining'))
-        else:
-            timeout_duration = 30.0
-
+        timeout_duration = float(initial_time)
         deadline = time.monotonic() + timeout_duration
 
-        from domain.Command import SendChatMessageCommand
-        from engine.logic import handle_send_chat
+        from phases.discussion.handlers import handle_command
 
         while True:
             remaining = deadline - time.monotonic()
@@ -33,11 +35,16 @@ class DiscussionDriver:
 
                 match trigger:
                     case UserInput(cmd):
-                        if isinstance(cmd, SendChatMessageCommand):
-                            events = handle_send_chat(engine.state, cmd)
-                            for e in events:
-                                engine.apply(e)
-                                # Also broadcast to UI
+                        events = handle_command(engine.state, cmd)
+                        for e in events:
+                            engine.apply(e)
+                            # Custom broadcast for chat?
+                            # If we want the driver to broadcast chat to UI, it needs to check event type.
+                            # But ideally the engine or projection handles this.
+                            # For parity with previous logic:
+                            from domain.ChatEvents import ChatSentEvent
+                            from domain.Command import SendChatMessageCommand
+                            if isinstance(e, ChatSentEvent) and isinstance(cmd, SendChatMessageCommand):
                                 engine.broadcast(f"{cmd.actor_id} says: {cmd.message}")
                     case Timeout():
                         engine.broadcast("Discussion ends.")
@@ -48,4 +55,5 @@ class DiscussionDriver:
 
         # Transition to Voting
         engine.broadcast("It is time to vote.")
-        engine.apply(PhaseChangeEvent(new_phase=VotingPhase()))
+        from phases.voting.events import VotingStartedEvent
+        engine.apply(VotingStartedEvent())

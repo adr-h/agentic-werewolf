@@ -1,12 +1,22 @@
-from dataclasses import replace
 from typing import List
-
 from domain.GameState import GameState
 from domain.Phase import HuntingPhase
 from domain.Role import WerewolfRole, BodyguardRole, DetectiveRole
 from domain.Event import Event
+from domain.Command import Command
 from phases.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
-from phases.hunting.events import HuntNominatedEvent, HuntExecutionEvent, ProtectionPlacedEvent, InvestigationResultEvent
+from phases.hunting.events import HuntNominatedEvent, ProtectionPlacedEvent, InvestigationResultEvent, HuntExecutionEvent
+
+def handle_command(state: GameState, command: Command) -> List[Event]:
+    match command:
+        case NominateHuntCommand():
+            return handle_nominate_hunt(state, command)
+        case ProtectCommand():
+            return handle_protect(state, command)
+        case InvestigateCommand():
+            return handle_investigate(state, command)
+        case _:
+            return []
 
 def resolve_hunting(state: GameState) -> List[Event]:
     phase = state.phase
@@ -36,7 +46,7 @@ def resolve_hunting(state: GameState) -> List[Event]:
         # Saved by Bodyguard
         return []
 
-    # 3. Execution (Using feature-specific event)
+    # 3. Execution
     return [HuntExecutionEvent(target_id=victim_id)]
 
 def handle_nominate_hunt(state: GameState, command: NominateHuntCommand) -> List[Event]:
@@ -67,7 +77,7 @@ def handle_protect(state: GameState, command: ProtectCommand) -> List[Event]:
     if not target or target.status != "alive":
         return []
 
-    return [ProtectionPlacedEvent(doctor_id=command.actor_id, target_id=command.target_id)]
+    return [ProtectionPlacedEvent(protector_id=command.actor_id, target_id=command.target_id)]
 
 def handle_investigate(state: GameState, command: InvestigateCommand) -> List[Event]:
     phase = state.phase
@@ -88,52 +98,6 @@ def handle_investigate(state: GameState, command: InvestigateCommand) -> List[Ev
     return [InvestigationResultEvent(
         detective_id=command.actor_id,
         target_id=command.target_id,
-        found_role_name=target.role.name,
+        found_role=target.role.name,
         found_faction=target.role.faction.value
     )]
-
-def apply_hunting_logic(state: GameState, event: Event) -> GameState:
-    match event:
-        case HuntNominatedEvent(actor_id, target_id):
-            if isinstance(state.phase, HuntingPhase):
-                new_hunts = {**state.phase.pending_hunts, actor_id: target_id}
-                new_phase = replace(state.phase, pending_hunts=new_hunts)
-                return replace(state, phase=new_phase)
-            return state
-
-        case HuntExecutionEvent(target_id):
-            # Modular Death Logic
-            new_characters = []
-            for c in state.characters:
-                if c.id == target_id:
-                    new_characters.append(replace(c, status="dead"))
-                else:
-                    new_characters.append(c)
-            return replace(state, characters=new_characters)
-
-        case ProtectionPlacedEvent(doc_id, target_id):
-            if isinstance(state.phase, HuntingPhase):
-                new_protected = state.phase.protected_ids | {target_id}
-                new_phase = replace(state.phase, protected_ids=new_protected)
-                return replace(state, phase=new_phase)
-            return state
-
-        case InvestigationResultEvent(det_id, target_id, found_role, found_faction):
-            if isinstance(state.phase, HuntingPhase):
-                new_inv = {**state.phase.pending_investigations, det_id: target_id}
-                new_phase = replace(state.phase, pending_investigations=new_inv)
-                state = replace(state, phase=new_phase)
-
-                new_characters = []
-                for c in state.characters:
-                    if c.id == det_id:
-                        new_knowledge = {**c.knowledge, target_id: found_role}
-                        new_characters.append(replace(c, knowledge=new_knowledge))
-                    else:
-                        new_characters.append(c)
-
-                return replace(state, characters=new_characters)
-            return state
-
-        case _:
-            return state

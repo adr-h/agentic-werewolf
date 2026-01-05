@@ -4,9 +4,8 @@ from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import DiscussionPhase
-from domain.SystemEvents import PhaseChangeEvent
 from phases.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
-from phases.hunting.logic import resolve_hunting, handle_nominate_hunt, handle_protect, handle_investigate
+from phases.hunting.handlers import resolve_hunting, handle_command
 
 class HuntingDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -14,6 +13,9 @@ class HuntingDriver:
         Manages the Night/Hunting Phase.
         Resolves when timeout expires.
         """
+        from phases.hunting.events import HuntingStartedEvent
+        engine.apply(HuntingStartedEvent())
+
         engine.broadcast("Night falls. The village sleeps. Special roles, wake up.")
 
         import time
@@ -32,14 +34,8 @@ class HuntingDriver:
 
                 match trigger:
                     case UserInput(command):
-                        events = []
-                        if isinstance(command, NominateHuntCommand):
-                            events = handle_nominate_hunt(engine.state, command)
-                        elif isinstance(command, ProtectCommand):
-                            events = handle_protect(engine.state, command)
-                        elif isinstance(command, InvestigateCommand):
-                            events = handle_investigate(engine.state, command)
-
+                        from phases.hunting.handlers import handle_command
+                        events = handle_command(engine.state, command)
                         for e in events:
                             engine.apply(e)
 
@@ -70,6 +66,8 @@ class HuntingDriver:
         # Go to Day Discussion
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            engine.apply(PhaseChangeEvent(new_phase=GameOverPhase(winner=winner)))
+            from phases.game_over.events import GameOverStartedEvent
+            engine.apply(GameOverStartedEvent(winner=winner))
         else:
-            engine.apply(PhaseChangeEvent(new_phase=DiscussionPhase(time_remaining=30)))
+            from phases.discussion.events import DiscussionStartedEvent
+            engine.apply(DiscussionStartedEvent(time_remaining=30))

@@ -3,9 +3,8 @@ from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import HuntingPhase, VotingPhase
-from domain.SystemEvents import PhaseChangeEvent
 from phases.voting.commands import CastVoteCommand
-from phases.voting.logic import handle_cast_vote, resolve_winner
+from phases.voting.handlers import handle_command, resolve_winner
 
 class VotingDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -13,12 +12,12 @@ class VotingDriver:
         Manages the Voting Phase loop.
         Ends when all alive players have voted OR timeout expires.
         """
+        from phases.voting.events import VotingStartedEvent
+        engine.apply(VotingStartedEvent())
+
         import time
         timeout_duration = 60.0
         deadline = time.monotonic() + timeout_duration
-
-        from domain.Command import SendChatMessageCommand
-        from engine.logic import handle_send_chat
 
         while True:
             # Check Exit Condition A: All alive players voted
@@ -37,18 +36,15 @@ class VotingDriver:
 
                 match trigger:
                     case UserInput(command):
-                        if isinstance(command, CastVoteCommand):
-                            events = handle_cast_vote(engine.state, command)
-                            for e in events:
-                                engine.apply(e)
-                        elif isinstance(command, SendChatMessageCommand):
-                            events = handle_send_chat(engine.state, command)
-                            for e in events:
-                                engine.apply(e)
+                        from phases.voting.handlers import handle_command
+                        events = handle_command(engine.state, command)
+                        for e in events:
+                            engine.apply(e)
+
+                            from domain.ChatEvents import ChatSentEvent
+                            from domain.Command import SendChatMessageCommand
+                            if isinstance(e, ChatSentEvent) and isinstance(command, SendChatMessageCommand):
                                 engine.broadcast(f"{command.actor_id} says: {command.message}")
-                        else:
-                            # Handle other commands? Or ignore?
-                            pass
 
                     case Timeout():
                         engine.broadcast("Time is up!")
@@ -68,12 +64,14 @@ class VotingDriver:
             engine.broadcast("No valid target found or tie. No one will be executed.")
 
         # Transition
-        # Go to Day Discussion
+        # Go to Night Hunting
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            engine.apply(PhaseChangeEvent(new_phase=GameOverPhase(winner=winner)))
+            from phases.game_over.events import GameOverStartedEvent
+            engine.apply(GameOverStartedEvent(winner=winner))
         else:
-            engine.apply(PhaseChangeEvent(new_phase=HuntingPhase()))
+            from phases.hunting.events import HuntingStartedEvent
+            engine.apply(HuntingStartedEvent())
 
     def _all_living_players_voted(self, state: GameState) -> bool:
         if not isinstance(state.phase, VotingPhase):
