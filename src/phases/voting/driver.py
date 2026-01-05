@@ -42,9 +42,9 @@ class VotingDriver:
                             engine.apply(e)
 
                             from domain.ChatEvents import ChatSentEvent
-                            from domain.Command import SendChatMessageCommand
+                            from phases.voting.commands import SendChatMessageCommand
                             if isinstance(e, ChatSentEvent) and isinstance(command, SendChatMessageCommand):
-                                engine.broadcast(f"{command.actor_id} says: {command.message}")
+                                engine.broadcast(f"{e.sender_name} says: {command.message}")
 
                     case Timeout():
                         engine.broadcast("Time is up!")
@@ -58,8 +58,10 @@ class VotingDriver:
         from phases.voting.events import VoteExecutionEvent
         winner_id = resolve_winner(engine.state)
         if winner_id:
-            engine.broadcast(f"The village has spoken. {winner_id} will be executed.")
-            engine.apply(VoteExecutionEvent(target_id=winner_id))
+            victim = next((c for c in engine.state.characters if c.id == winner_id), None)
+            victim_name = victim.name if victim else winner_id
+            engine.broadcast(f"The village has spoken. {victim_name} will be executed.")
+            engine.apply(VoteExecutionEvent(target_id=winner_id, target_name=victim_name))
         else:
             engine.broadcast("No valid target found or tie. No one will be executed.")
 

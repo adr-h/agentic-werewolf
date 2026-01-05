@@ -45,7 +45,7 @@ class DiscussionDriver:
                             from domain.ChatEvents import ChatSentEvent
                             from domain.Command import SendChatMessageCommand
                             if isinstance(e, ChatSentEvent) and isinstance(cmd, SendChatMessageCommand):
-                                engine.broadcast(f"{cmd.actor_id} says: {cmd.message}")
+                                engine.broadcast(f"{e.sender_name} says: {cmd.message}")
                     case Timeout():
                         engine.broadcast("Discussion ends.")
                         break

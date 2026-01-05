@@ -24,6 +24,7 @@ def handle_send_chat(state: GameState, command: SendChatMessageCommand) -> List[
 
     return [ChatSentEvent(
         sender_id=command.actor_id,
+        sender_name=sender.name,
         message=command.message,
         rationale=command.rationale,
         strategy=command.strategy
@@ -44,7 +45,12 @@ def handle_cast_vote(state: GameState, command: CastVoteCommand) -> List[Event]:
     if not target or target.status != "alive":
         return []
 
-    return [VoteCastEvent(voter_id=command.actor_id, target_id=command.target_id)]
+    return [VoteCastEvent(
+        voter_id=command.actor_id,
+        voter_name=voter.name,
+        target_id=command.target_id,
+        target_name=target.name
+    )]
 
 def resolve_winner(state: GameState) -> str | None:
     phase = state.phase

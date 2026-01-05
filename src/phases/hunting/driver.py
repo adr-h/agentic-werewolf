@@ -57,7 +57,7 @@ class HuntingDriver:
             engine.apply(e)
             if isinstance(e, HuntExecutionEvent):
                 death_occurred = True
-                engine.broadcast(f"Tragedy! {e.target_id} was found dead this morning.")
+                engine.broadcast(f"Tragedy! {e.target_name} was found dead this morning.")
 
         if not death_occurred:
             engine.broadcast("It was a quiet night. No one died.")

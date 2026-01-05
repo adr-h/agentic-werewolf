@@ -20,6 +20,7 @@ def handle_send_chat(state: GameState, command: SendChatMessageCommand) -> List[
 
     return [ChatSentEvent(
         sender_id=command.actor_id,
+        sender_name=sender.name,
         message=command.message,
         rationale=command.rationale,
         strategy=command.strategy

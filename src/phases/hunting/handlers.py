@@ -47,7 +47,8 @@ def resolve_hunting(state: GameState) -> List[Event]:
         return []
 
     # 3. Execution
-    return [HuntExecutionEvent(target_id=victim_id)]
+    victim = next((c for c in state.characters if c.id == victim_id), None)
+    return [HuntExecutionEvent(target_id=victim_id, target_name=victim.name if victim else "Unknown")]
 
 def handle_nominate_hunt(state: GameState, command: NominateHuntCommand) -> List[Event]:
     phase = state.phase
@@ -62,7 +63,12 @@ def handle_nominate_hunt(state: GameState, command: NominateHuntCommand) -> List
     if not target or target.status != "alive":
         return []
 
-    return [HuntNominatedEvent(actor_id=command.actor_id, target_id=command.target_id)]
+    return [HuntNominatedEvent(
+        actor_id=command.actor_id,
+        actor_name=actor.name,
+        target_id=command.target_id,
+        target_name=target.name
+    )]
 
 def handle_protect(state: GameState, command: ProtectCommand) -> List[Event]:
     phase = state.phase
@@ -77,7 +83,12 @@ def handle_protect(state: GameState, command: ProtectCommand) -> List[Event]:
     if not target or target.status != "alive":
         return []
 
-    return [ProtectionPlacedEvent(protector_id=command.actor_id, target_id=command.target_id)]
+    return [ProtectionPlacedEvent(
+        protector_id=command.actor_id,
+        protector_name=actor.name,
+        target_id=command.target_id,
+        target_name=target.name
+    )]
 
 def handle_investigate(state: GameState, command: InvestigateCommand) -> List[Event]:
     phase = state.phase
@@ -97,7 +108,9 @@ def handle_investigate(state: GameState, command: InvestigateCommand) -> List[Ev
 
     return [InvestigationResultEvent(
         detective_id=command.actor_id,
+        detective_name=actor.name,
         target_id=command.target_id,
+        target_name=target.name,
         found_role=target.role.name,
         found_faction=target.role.faction.value
     )]

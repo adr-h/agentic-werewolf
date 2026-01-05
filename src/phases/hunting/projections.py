@@ -7,26 +7,26 @@ from phases.hunting.events import HuntNominatedEvent, HuntExecutionEvent, Protec
 
 def render_hunting_event(event: Event, viewer: Character) -> Optional[str]:
     match event:
-        case HuntNominatedEvent(actor_id, target_id):
+        case HuntNominatedEvent(actor_id, actor_name, target_id, target_name):
             if isinstance(viewer.role, WerewolfRole):
                 if viewer.id == actor_id:
-                    return f"You nominated {target_id}."
+                    return f"You nominated {target_name}."
                 else:
-                    return f"Packmate {actor_id} nominated {target_id}."
+                    return f"Packmate {actor_name} nominated {target_name}."
             return None
 
-        case ProtectionPlacedEvent(doc_id, target_id):
+        case ProtectionPlacedEvent(doc_id, doc_name, target_id, target_name):
             if viewer.id == doc_id:
-                return f"You are protecting {target_id} tonight."
+                return f"You are protecting {target_name} tonight."
             return None
 
-        case InvestigationResultEvent(det_id, target_id, found_role, found_faction):
+        case InvestigationResultEvent(det_id, det_name, target_id, target_name, found_role, found_faction):
             if viewer.id == det_id:
-                return f"Investigation Result: {target_id} is a {found_role} ({found_faction})."
+                return f"Investigation Result: {target_name} is a {found_role} ({found_faction})."
             return None
 
-        case HuntExecutionEvent(target_id):
-            return f"The werewolves hunted {target_id} during the night."
+        case HuntExecutionEvent(target_id, target_name):
+            return f"The werewolves hunted {target_name} during the night."
 
         case _:
             return None

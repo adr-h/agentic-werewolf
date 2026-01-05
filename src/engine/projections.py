@@ -52,13 +52,15 @@ def project_game_view(state: GameState, viewer_id: str) -> GameView:
     # 3. Render Events (Modular)
     rendered_events = []
     for event in state.events[-100:]:
-        rendered = render_voting_event(event, viewer) or render_hunting_event(event, viewer)
+        rendered = render_voting_event(event, viewer) or render_hunting_event(event, viewer) or render_discussion_event(event, viewer)
+
         if rendered:
             rendered_events.append(rendered)
         else:
+            from domain.ChatEvents import ChatSentEvent
             match event:
-                case ChatSentEvent(sender, msg, _, _):
-                    rendered_events.append(f"{sender}: {msg}")
+                case ChatSentEvent(sender_id, sender_name, msg, _, _):
+                    rendered_events.append(f"{sender_name}: {msg}")
                 case _:
                     # Check for generic Started events
                     class_name = event.__class__.__name__
