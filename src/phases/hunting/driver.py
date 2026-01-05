@@ -4,8 +4,8 @@ from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import DiscussionPhase
 from domain.SystemEvents import ExecutionEvent, PhaseChangeEvent
-from features.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
-from features.hunting.logic import resolve_hunting, handle_nominate_hunt, handle_protect, handle_investigate
+from phases.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
+from phases.hunting.logic import resolve_hunting, handle_nominate_hunt, handle_protect, handle_investigate
 
 class HuntingDriver:
     async def run(self, engine: EngineProtocol) -> None:

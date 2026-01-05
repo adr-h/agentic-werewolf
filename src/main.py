@@ -1,5 +1,5 @@
 from domain.Phase import VotingPhase
-from features.hunting.commands import NominateHuntCommand
+from phases.hunting.commands import NominateHuntCommand
 import asyncio
 
 from domain.GameState import GameState
@@ -8,7 +8,7 @@ from domain.Character import Character
 from domain.Role import VillagerRole, WerewolfRole, BodyguardRole, DoctorRole
 from engine.GameEngine import GameEngine
 from domain.Engine import UserInput
-from features.voting.commands import CastVoteCommand
+from phases.voting.commands import CastVoteCommand
 
 async def main():
     await voting_main()

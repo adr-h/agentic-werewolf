@@ -3,7 +3,7 @@ from domain.Character import Character
 from domain.Event import Event
 from domain.Role import WerewolfRole
 from domain.GameState import GameState
-from features.hunting.events import HuntNominatedEvent, HuntExecutionEvent, ProtectionPlacedEvent, InvestigationResultEvent
+from phases.hunting.events import HuntNominatedEvent, HuntExecutionEvent, ProtectionPlacedEvent, InvestigationResultEvent
 
 def render_hunting_event(event: Event, viewer: Character) -> Optional[str]:
     match event:

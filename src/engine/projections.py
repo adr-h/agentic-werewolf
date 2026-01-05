@@ -6,9 +6,9 @@ from domain.Role import project_role_view
 from domain.SystemEvents import PhaseChangeEvent
 
 # Modular Projections
-from features.voting.projections import render_voting_event, project_view_details as voting_details
-from features.hunting.projections import render_hunting_event, project_view_details as hunting_details
-from features.discussion.projections import project_view_details as discussion_details
+from phases.voting.projections import render_voting_event, project_view_details as voting_details
+from phases.hunting.projections import render_hunting_event, project_view_details as hunting_details
+from phases.discussion.projections import project_view_details as discussion_details
 
 @dataclass(frozen=True)
 class PlayerView:

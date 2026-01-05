@@ -5,8 +5,8 @@ from domain.GameState import GameState
 from domain.Phase import HuntingPhase
 from domain.Role import WerewolfRole, BodyguardRole, DetectiveRole
 from domain.Event import Event
-from features.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
-from features.hunting.events import HuntNominatedEvent, HuntExecutionEvent, ProtectionPlacedEvent, InvestigationResultEvent
+from phases.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
+from phases.hunting.events import HuntNominatedEvent, HuntExecutionEvent, ProtectionPlacedEvent, InvestigationResultEvent
 
 def resolve_hunting(state: GameState) -> List[Event]:
     phase = state.phase

@@ -4,8 +4,8 @@ from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import HuntingPhase, VotingPhase
 from domain.SystemEvents import ExecutionEvent, PhaseChangeEvent
-from features.voting.commands import CastVoteCommand
-from features.voting.logic import handle_cast_vote, resolve_winner
+from phases.voting.commands import CastVoteCommand
+from phases.voting.logic import handle_cast_vote, resolve_winner
 
 class VotingDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -59,7 +59,7 @@ class VotingDriver:
                     break
 
         # Resolution
-        from features.voting.events import VoteExecutionEvent
+        from phases.voting.events import VoteExecutionEvent
         winner_id = resolve_winner(engine.state)
         if winner_id:
             engine.broadcast(f"The village has spoken. {winner_id} will be executed.")

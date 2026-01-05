@@ -3,7 +3,7 @@ from domain.GameState import GameState
 from domain.Character import Character
 from domain.Event import Event
 from domain.Phase import VotingPhase
-from features.voting.events import VoteCastEvent, VoteExecutionEvent
+from phases.voting.events import VoteCastEvent, VoteExecutionEvent
 
 def render_voting_event(event: Event, viewer: Character) -> Optional[str]:
     match event:

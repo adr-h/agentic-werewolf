@@ -6,8 +6,8 @@ from domain.Command import SendChatMessageCommand
 from domain.ChatEvents import ChatSentEvent
 
 # Feature Logic
-from features.voting.logic import apply_voting_logic
-from features.hunting.logic import apply_hunting_logic
+from phases.voting.logic import apply_voting_logic
+from phases.hunting.logic import apply_hunting_logic
 
 def handle_send_chat(state: GameState, command: SendChatMessageCommand) -> list:
     """

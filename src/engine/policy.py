@@ -3,9 +3,9 @@ from domain.GameState import GameState
 from domain.Command import Command
 
 # Import Feature Policies
-from features.voting.policy import get_available_commands as get_voting_commands
-from features.hunting.policy import get_available_commands as get_hunting_commands
-from features.discussion.policy import get_available_commands as get_discussion_commands
+from phases.voting.policy import get_available_commands as get_voting_commands
+from phases.hunting.policy import get_available_commands as get_hunting_commands
+from phases.discussion.policy import get_available_commands as get_discussion_commands
 
 def get_available_commands(state: GameState, character_id: str) -> List[Type[Command]]:
     """

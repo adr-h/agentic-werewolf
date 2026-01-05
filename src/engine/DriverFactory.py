@@ -4,19 +4,14 @@ from domain.Engine import EngineProtocol
 from domain.Phase import Phase, DiscussionPhase, VotingPhase, HuntingPhase, GameOverPhase
 
 # Import Drivers
-from features.discussion.driver import DiscussionDriver
-from features.voting.driver import VotingDriver
-from features.hunting.driver import HuntingDriver
+from phases.discussion.driver import DiscussionDriver
+from phases.voting.driver import VotingDriver
+from phases.hunting.driver import HuntingDriver
+from phases.game_over.driver import GameOverDriver
 
 class PhaseDriver(Protocol):
     async def run(self, engine: EngineProtocol) -> None:
         ...
-
-class GameOverDriver:
-    async def run(self, engine: EngineProtocol) -> None:
-        if isinstance(engine.state.phase, GameOverPhase):
-            engine.broadcast(f"Game Over! The winner is: {engine.state.phase.winner}")
-        # Terminate loop
 
 def get_driver_for(phase: Phase) -> PhaseDriver:
     match phase:

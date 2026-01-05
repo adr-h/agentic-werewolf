@@ -4,8 +4,8 @@ from typing import List
 from domain.GameState import GameState
 from domain.Phase import VotingPhase
 from domain.Event import Event
-from features.voting.commands import CastVoteCommand
-from features.voting.events import VoteCastEvent, VoteExecutionEvent
+from phases.voting.commands import CastVoteCommand
+from phases.voting.events import VoteCastEvent, VoteExecutionEvent
 
 def handle_cast_vote(state: GameState, command: CastVoteCommand) -> List[Event]:
     phase = state.phase
