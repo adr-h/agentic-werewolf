@@ -1,3 +1,4 @@
+from domain.PhaseEvents import PhaseChangeEvent
 from domain.Phase import GameOverPhase
 import asyncio
 from typing import Optional
@@ -16,6 +17,8 @@ class GameEngine(EngineProtocol):
     def apply(self, event: Event) -> None:
         """Applying event mutates the state by running the pure reducer."""
         print(f"[EVENT] Applying {event}")
+        if isinstance(event, PhaseChangeEvent) and event.flavor_text:
+            self.broadcast(event.flavor_text)
         self.state = root_reducer(self.state, event)
 
     async def wait_for_input(self, timeout: float) -> InputResult:

@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from domain.GameState import GameState
 from domain.Role import project_role_view
 from domain.ChatEvents import ChatSentEvent
+from domain.PhaseEvents import PhaseChangeEvent
+from domain.Phase import VotingPhase, HuntingPhase, DiscussionPhase, GameOverPhase
 
 # Modular Projections
 from phases.voting.projections import render_voting_event, project_view_details as voting_details
@@ -54,14 +56,22 @@ def project_game_view(state: GameState, viewer_id: str) -> GameView:
     # 3. Render Events (Modular)
     rendered_events = []
     for event in state.events[-100:]:
-        rendered = render_voting_event(event, viewer) or render_hunting_event(event, viewer) or render_discussion_event(event, viewer)
+        rendered = None
+
+        # Centralized event rendering
+        if isinstance(event, PhaseChangeEvent):
+            rendered = event.flavor_text or f"Changing to {event.next_phase.__class__.__name__} phase"
+        elif isinstance(event, ChatSentEvent):
+            rendered = f"{event.sender_name}: {event.message}"
+
+        # Delegate to modular renderers if not handled centrally
+        if not rendered:
+            rendered = render_voting_event(event, viewer) or \
+                       render_hunting_event(event, viewer) or \
+                       render_discussion_event(event, viewer)
 
         if rendered:
             rendered_events.append(rendered)
-        else:
-            match event:
-                case ChatSentEvent(sender_id, sender_name, msg, _, _):
-                    rendered_events.append(f"{sender_name}: {msg}")
 
     me_view = next(p for p in players if p.id == viewer_id)
 

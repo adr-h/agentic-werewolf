@@ -1,4 +1,5 @@
-from phases.discussion.events import StartVotingEvent
+from domain.PhaseEvents import PhaseChangeEvent
+from domain.Phase import VotingPhase
 from phases.discussion.commands import SendChatMessageCommand
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.ChatEvents import ChatSentEvent
@@ -50,5 +51,4 @@ class DiscussionDriver:
                     break
 
         # Transition to Voting
-        engine.broadcast("It is time to vote.")
-        engine.apply(StartVotingEvent())
+        engine.apply(PhaseChangeEvent(next_phase=VotingPhase(), flavor_text="It is time to vote."))

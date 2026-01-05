@@ -12,11 +12,3 @@ class VoteCastEvent(Event):
 class VoteExecutionEvent(Event):
     target_id: str
     target_name: str
-
-@dataclass(frozen=True)
-class EndGameEvent(Event):
-    winner: str
-
-@dataclass(frozen=True)
-class StartHuntEvent(Event):
-    pass

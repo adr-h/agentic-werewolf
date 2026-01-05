@@ -1,9 +1,8 @@
-from phases.voting.events import StartHuntEvent
-from phases.voting.events import EndGameEvent
 from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
-from domain.Phase import VotingPhase
+from domain.Phase import VotingPhase, HuntingPhase, GameOverPhase
+from domain.PhaseEvents import PhaseChangeEvent
 from phases.voting.handlers import handle_command, resolve_winner
 from domain.ChatEvents import ChatSentEvent
 
@@ -67,9 +66,10 @@ class VotingDriver:
         # Go to Night Hunting
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            engine.apply(EndGameEvent(winner=winner))
+            # Phase transition
+            engine.apply(PhaseChangeEvent(next_phase=GameOverPhase(winner=winner), flavor_text=f"Game Over! The winner is: {winner}"))
         else:
-            engine.apply(StartHuntEvent())
+            engine.apply(PhaseChangeEvent(next_phase=HuntingPhase(), flavor_text="The sun is setting. It is night. The hunt begins..."))
 
     def _all_living_players_voted(self, state: GameState) -> bool:
         if not isinstance(state.phase, VotingPhase):
@@ -81,10 +81,5 @@ class VotingDriver:
         # Assuming everyone alive votes (Vote Phase).
 
         # Get count of votes in registry (phase-local)
-        # Note: phase is Union, need to check type strictness usually, but Driver is instantiated only for VotingPhase.
-        # But state.phase might have changed if we applied an event?
-        # No, 'handle_cast_vote' returns events, 'engine.apply' updates state.
-        # So state.phase IS VotingPhase (unless we transitioned early, which we define here).
-
         total_votes = len(state.phase.current_ballots)
         return total_votes >= len(living)

@@ -1,11 +1,9 @@
-from phases.hunting.events import StartDiscussionEvent
-from phases.hunting.events import EndGameEvent
 from phases.hunting.events import HuntExecutionEvent
-from domain.Phase import GameOverPhase
+from domain.Phase import GameOverPhase, DiscussionPhase
 from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
-from domain.Phase import DiscussionPhase
+from domain.PhaseEvents import PhaseChangeEvent
 from phases.hunting.commands import NominateHuntCommand, ProtectCommand, InvestigateCommand
 from phases.hunting.handlers import resolve_hunting, handle_command
 
@@ -65,6 +63,6 @@ class HuntingDriver:
         # Go to Day Discussion
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            engine.apply(EndGameEvent(winner=winner))
+            engine.apply(PhaseChangeEvent(next_phase=GameOverPhase(winner=winner), flavor_text=f"Game Over! The winner is: {winner}"))
         else:
-            engine.apply(StartDiscussionEvent())
+            engine.apply(PhaseChangeEvent(next_phase=DiscussionPhase(), flavor_text="The sun rises. It is day. Discuss who you suspect..."))
