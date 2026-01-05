@@ -8,12 +8,12 @@ from agents.run import Runner
 from domain.Engine import EngineProtocol, UserInput
 from domain.GameState import GameState
 from domain.Character import Character
-from .model import create_agent, RecognisedModels
+from .agent import create_agent, RecognisedModels
 from .projections import get_agent_view, get_available_commands
 from .tools.CommandAdapter import command_to_tool
 from .tools.DoNothingTool import create_do_nothing_tool
 
-class DMMFAgenticPlayer:
+class AgenticPlayer:
     def __init__(
         self,
         character_id: str,

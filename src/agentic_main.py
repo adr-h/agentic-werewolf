@@ -4,7 +4,7 @@ from domain.GameState import GameState
 from domain.Character import Character
 from domain.Role import VillagerRole, WerewolfRole, BodyguardRole, DetectiveRole
 from engine.GameEngine import GameEngine
-from player.agentic_player.DMMFAgenticPlayer import DMMFAgenticPlayer
+from player.agentic_player.AgenticPlayer import AgenticPlayer
 
 # Role Descriptions (from old Role.py)
 VILLAGER_DESC = "You are a normal villager. Your goal is to identify and eliminate all Werewolves using logic and deduction. You vote during the day."
@@ -29,10 +29,10 @@ async def main():
 
     # 3. Setup Agentic Players
     players = [
-        DMMFAgenticPlayer("p1", "Alice", "Werewolf", WEREWOLF_DESC, "openai/gpt-4o", engine),
-        DMMFAgenticPlayer("p2", "Bob", "Normal Villager", VILLAGER_DESC, "openai/gpt-4o", engine),
-        DMMFAgenticPlayer("p3", "Charlie", "Bodyguard", BODYGUARD_DESC, "openai/gpt-4o", engine),
-        DMMFAgenticPlayer("p4", "David", "Detective", DETECTIVE_DESC, "openai/gpt-4o", engine),
+        AgenticPlayer("p1", "Alice", "Werewolf", WEREWOLF_DESC, "openai/gpt-4o", engine),
+        AgenticPlayer("p2", "Bob", "Normal Villager", VILLAGER_DESC, "openai/gpt-4o", engine),
+        AgenticPlayer("p3", "Charlie", "Bodyguard", BODYGUARD_DESC, "openai/gpt-4o", engine),
+        AgenticPlayer("p4", "David", "Detective", DETECTIVE_DESC, "openai/gpt-4o", engine),
     ]
 
     # 4. Start Engine tasks
