@@ -37,10 +37,7 @@ class DiscussionDriver:
                         events = handle_command(engine.state, cmd)
                         for e in events:
                             engine.apply(e)
-                            # Custom broadcast for chat?
-                            # If we want the driver to broadcast chat to UI, it needs to check event type.
-                            # But ideally the engine or projection handles this.
-                            # For parity with previous logic:
+
                             if isinstance(e, ChatSentEvent):
                                 engine.broadcast(f"{e.sender_name} says: {e.message}")
                     case Timeout():

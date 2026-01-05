@@ -18,38 +18,6 @@ def handle_command(state: GameState, command: Command) -> List[Event]:
         case _:
             return []
 
-def resolve_hunting(state: GameState) -> List[Event]:
-    phase = state.phase
-    if not isinstance(phase, HuntingPhase):
-        return []
-
-    # 1. Tally Hunt Nominations
-    votes = {}
-    for target in phase.pending_hunts.values():
-        votes[target] = votes.get(target, 0) + 1
-
-    if not votes:
-        return []
-
-    # Majority / Max votes
-    max_votes = max(votes.values())
-    targets = [k for k, v in votes.items() if v == max_votes]
-
-    # Tie-breaker: If tie, no one dies.
-    if len(targets) != 1:
-        return []
-
-    victim_id = targets[0]
-
-    # 2. Check Protection
-    if victim_id in phase.protected_ids:
-        # Saved by Bodyguard
-        return []
-
-    # 3. Execution
-    victim = next((c for c in state.characters if c.id == victim_id), None)
-    return [HuntExecutionEvent(target_id=victim_id, target_name=victim.name if victim else "Unknown")]
-
 def handle_nominate_hunt(state: GameState, command: NominateHuntCommand) -> List[Event]:
     phase = state.phase
     if not isinstance(phase, HuntingPhase):

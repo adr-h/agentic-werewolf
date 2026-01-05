@@ -3,7 +3,7 @@ from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.Phase import VotingPhase, HuntingPhase, GameOverPhase
 from domain.PhaseEvents import PhaseChangeEvent
-from phases.voting.handlers import handle_command, resolve_winner
+from phases.voting.handlers import handle_command
 from domain.ChatEvents import ChatSentEvent
 
 class VotingDriver:
@@ -53,12 +53,12 @@ class VotingDriver:
 
         # Resolution
         from phases.voting.events import VoteExecutionEvent
-        winner_id = resolve_winner(engine.state)
-        if winner_id:
-            victim = next((c for c in engine.state.characters if c.id == winner_id), None)
-            victim_name = victim.name if victim else winner_id
+        voted_id = self._resolve_voted(engine.state)
+        if voted_id:
+            victim = next((c for c in engine.state.characters if c.id == voted_id), None)
+            victim_name = victim.name if victim else voted_id
             engine.broadcast(f"The village has spoken. {victim_name} will be executed.")
-            engine.apply(VoteExecutionEvent(target_id=winner_id, target_name=victim_name))
+            engine.apply(VoteExecutionEvent(target_id=voted_id, target_name=victim_name))
         else:
             engine.broadcast("No valid target found or tie. No one will be executed.")
 
@@ -83,3 +83,24 @@ class VotingDriver:
         # Get count of votes in registry (phase-local)
         total_votes = len(state.phase.current_ballots)
         return total_votes >= len(living)
+
+    def _resolve_voted(self, state: GameState) -> str | None:
+        phase = state.phase
+        if not isinstance(phase, VotingPhase):
+            return None
+
+        # Simple tally
+        counts = {}
+        for target in phase.current_ballots.values():
+            counts[target] = counts.get(target, 0) + 1
+
+        if not counts:
+            return None
+
+        max_votes = max(counts.values())
+        winners = [k for k, v in counts.items() if v == max_votes]
+
+        if len(winners) == 1:
+            return winners[0]
+
+        return None

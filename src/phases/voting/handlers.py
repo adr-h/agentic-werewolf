@@ -51,24 +51,3 @@ def handle_cast_vote(state: GameState, command: CastVoteCommand) -> List[Event]:
         target_id=command.target_id,
         target_name=target.name
     )]
-
-def resolve_winner(state: GameState) -> str | None:
-    phase = state.phase
-    if not isinstance(phase, VotingPhase):
-        return None
-
-    # Simple tally
-    counts = {}
-    for target in phase.current_ballots.values():
-        counts[target] = counts.get(target, 0) + 1
-
-    if not counts:
-        return None
-
-    max_votes = max(counts.values())
-    winners = [k for k, v in counts.items() if v == max_votes]
-
-    if len(winners) == 1:
-        return winners[0]
-
-    return None

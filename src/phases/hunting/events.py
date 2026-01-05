@@ -1,3 +1,4 @@
+from typing import Union
 from dataclasses import dataclass
 from domain.Event import Event
 
@@ -28,3 +29,5 @@ class InvestigationResultEvent(Event):
     target_name: str
     found_role: str
     found_faction: str
+
+HuntingEvents = Union[HuntNominatedEvent, HuntExecutionEvent, ProtectionPlacedEvent, InvestigationResultEvent]

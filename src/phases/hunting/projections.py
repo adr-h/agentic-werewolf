@@ -26,7 +26,7 @@ def render_hunting_event(event: Event, viewer: Character) -> Optional[str]:
             return None
 
         case HuntExecutionEvent(target_id, target_name):
-            return f"The werewolves hunted {target_name} during the night."
+            return f"Tragedy! {target_name} was found dead!"
 
         case _:
             return None
