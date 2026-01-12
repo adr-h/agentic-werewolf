@@ -10,9 +10,9 @@ def render_hunting_event(event: Event, viewer: Character) -> Optional[str]:
         case HuntNominatedEvent(actor_id, actor_name, target_id, target_name):
             if isinstance(viewer.role, WerewolfRole):
                 if viewer.id == actor_id:
-                    return f"You nominated {target_name}."
+                    return f"You nominated to hunt {target_name} with your fellow werewolves. If they're the last nominated target at the end of the phase, they'll be hunted."
                 else:
-                    return f"Packmate {actor_name} nominated {target_name}."
+                    return f"Packmate {actor_name} nominated {target_name} to be hunted. If they're the last nominated target at the end of the phase, they'll be hunted."
             return None
 
         case ProtectionPlacedEvent(doc_id, doc_name, target_id, target_name):

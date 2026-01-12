@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from domain.Command import Command
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class NominateHuntCommand(Command):
     """
     Nominate a target for the werewolves to kill during the night.
@@ -13,7 +13,7 @@ class NominateHuntCommand(Command):
     """
     target_id: str = field(metadata={"description": "The ID of the player the werewolves should hunt."})
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class ProtectCommand(Command):
     """
     Choose a player to protect from death tonight.
@@ -25,7 +25,7 @@ class ProtectCommand(Command):
     """
     target_id: str = field(metadata={"description": "The ID of the player to protect from death tonight."})
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class InvestigateCommand(Command):
     """
     Reveal the secret role of a target player.

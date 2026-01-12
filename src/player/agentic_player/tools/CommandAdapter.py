@@ -25,8 +25,8 @@ def command_to_tool(
     # Introspect fields
     command_fields = fields(command_class)
 
-    # We ignore 'actor_id' in the tool parameters as it's provided by the context
-    param_fields = [f for f in command_fields if f.name != "actor_id"]
+    # We ignore 'actor_id' and 'timestamp' in the tool parameters as they are provided by the context/engine
+    param_fields = [f for f in command_fields if f.name not in ["actor_id", "timestamp"]]
 
     # Build JSON schema properties
     properties = {}

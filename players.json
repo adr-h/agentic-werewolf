@@ -1,0 +1,22 @@
+[
+   {
+      "name": "Alice",
+      "role": "Werewolf",
+      "model": "openai/gpt-4o"
+   },
+   {
+      "name": "Bob",
+      "role": "Villager",
+      "model": "google/gemini-2.5-flash-lite"
+   },
+   {
+      "name": "Charlie",
+      "role": "Villager",
+      "model": "google/gemini-3-flash-preview"
+   },
+   {
+      "name": "David",
+      "role": "Villager",
+      "model": "qwen/qwen3-32b"
+   }
+]

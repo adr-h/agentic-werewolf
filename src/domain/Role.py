@@ -8,25 +8,45 @@ class VillagerRole:
     name: Literal["Normal Villager"] = "Normal Villager"
     faction: Faction = Faction.VILLAGERS
 
+    @property
+    def description(self) -> str:
+        return "You are a normal villager. Your goal is to identify and eliminate all Werewolves using logic and deduction. You vote during the day."
+
 @dataclass(frozen=True)
 class WerewolfRole:
     name: Literal["Werewolf"] = "Werewolf"
     faction: Faction = Faction.WEREWOLVES
+
+    @property
+    def description(self) -> str:
+        return "You are a werewolf. You can eliminate one player during the Hunting Phase (Night). Your goal is to eliminate all villagers."
 
 @dataclass(frozen=True)
 class BodyguardRole:
     name: Literal["Bodyguard"] = "Bodyguard"
     faction: Faction = Faction.VILLAGERS
 
+    @property
+    def description(self) -> str:
+        return "You are a bodyguard. You can protect one player from being hunted each night. You cannot protect yourself."
+
 @dataclass(frozen=True)
 class DoctorRole:
     name: Literal["Doctor"] = "Doctor"
     faction: Faction = Faction.VILLAGERS
 
+    @property
+    def description(self) -> str:
+        return "You are a doctor. You can save one player from being hunted each night."
+
 @dataclass(frozen=True)
 class DetectiveRole:
     name: Literal["Detective"] = "Detective"
     faction: Faction = Faction.VILLAGERS
+
+    @property
+    def description(self) -> str:
+        return "You are a detective. You can investigate one player per night to reveal their true role."
 
 Role = VillagerRole | WerewolfRole | BodyguardRole | DoctorRole | DetectiveRole
 

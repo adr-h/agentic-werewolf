@@ -1,5 +1,6 @@
 from phases.discussion.projections import render_discussion_event
-from typing import List
+from typing import List, Tuple
+from datetime import datetime
 from dataclasses import dataclass
 from domain.GameState import GameState
 from domain.Role import project_role_view
@@ -25,7 +26,7 @@ class GameView:
     current_phase: str
     me: PlayerView
     players: List[PlayerView]
-    recent_events: List[str]
+    recent_events: List[Tuple[str, datetime]]
     phase_details: dict
 
 def project_game_view(state: GameState, viewer_id: str) -> GameView:
@@ -71,7 +72,7 @@ def project_game_view(state: GameState, viewer_id: str) -> GameView:
                        render_discussion_event(event, viewer)
 
         if rendered:
-            rendered_events.append(rendered)
+            rendered_events.append((rendered, event.timestamp))
 
     me_view = next(p for p in players if p.id == viewer_id)
 

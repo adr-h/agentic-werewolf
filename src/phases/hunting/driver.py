@@ -32,7 +32,6 @@ class HuntingDriver:
 
                 match trigger:
                     case UserInput(command):
-                        from phases.hunting.handlers import handle_command
                         events = handle_command(engine.state, command)
                         for e in events:
                             engine.apply(e)

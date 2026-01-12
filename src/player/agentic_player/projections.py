@@ -28,7 +28,7 @@ def get_agent_view(state: GameState, character_id: str) -> str:
         output.append(f"- {p.name} ({p.id}): [{p.status.upper()}] (Role: {p.role_name})")
 
     output.append("\nRECENT EVENTS:")
-    for e in view.recent_events:
-        output.append(f"  - {e}")
+    for e_str, ts in view.recent_events:
+        output.append(f"  - [{ts.strftime('%I:%M:%S%p').lower()}] {e_str}")
 
     return "\n".join(output)

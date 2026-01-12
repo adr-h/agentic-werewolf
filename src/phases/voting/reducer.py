@@ -6,14 +6,14 @@ from .events import VoteCastEvent, VoteExecutionEvent
 
 def apply_voting_logic(state: GameState, event: Event) -> GameState:
     match event:
-        case VoteCastEvent(voter_id, voter_name, target_id, target_name):
+        case VoteCastEvent(voter_id=voter_id, target_id=target_id):
             if isinstance(state.phase, VotingPhase):
                 new_ballots = {**state.phase.current_ballots, voter_id: target_id}
                 new_phase = replace(state.phase, current_ballots=new_ballots)
                 return replace(state, phase=new_phase)
             return state
 
-        case VoteExecutionEvent(target_id):
+        case VoteExecutionEvent(target_id=target_id):
             # Modular Death Logic for Voting
             new_characters = []
             for c in state.characters:

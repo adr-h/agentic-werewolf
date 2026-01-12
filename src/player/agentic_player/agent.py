@@ -6,17 +6,7 @@ from agents.extensions.models.litellm_model import LitellmModel
 
 load_dotenv()
 
-RecognisedModels = Literal[
-   "openai/gpt-4o",
-   "openai/gpt-oss-120b",
-   "minimax/minimax-m2",
-   "qwen/qwen3-8b",
-   "qwen/qwen3-14b",
-   "google/gemini-2.5-flash-lite",
-   "google/gemini-3-flash-preview",
-   "anthropic/claude-opus-4.5",
-   "x-ai/grok-4.1-fast"
-]
+from domain.RecognisedModels import RecognisedModels
 
 def create_model(model_id: RecognisedModels) -> LitellmModel:
    # return OpenAIModel(
