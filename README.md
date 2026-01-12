@@ -1,8 +1,8 @@
 # Agentic Werewolf Simulation
 
-![Game Simulation Screenshot](media/screenshot.png)
-
 An autonomous, agent-driven simulation of the classic social deduction game **Werewolf**. This project leverages Large Language Models (LLMs) to power "Agentic Players" that can reason, strategize, and interact within a structured game engine.
+
+![Another Screenshot](media/screenshot_2.png)
 
 ## 🐺 Overview
 
@@ -13,9 +13,6 @@ Note: A significant portion of this codebase was crafted with the assistance of 
 
 ## ✨ Key Features
 
-![Another Screenshot](media/screenshot_2.png)
-
-
 - **Autonomous Agentic Players**: Each player is powered by an LLM (via OpenRouter), capable of following complex game rules and maintaining a persona.
 - **TUI (Terminal User Interface)**: A rich, real-time dashboard built with `Textual` to monitor the game.
   - **Switch Perspective**: View the game from the "eyes" of any player.
@@ -24,6 +21,8 @@ Note: A significant portion of this codebase was crafted with the assistance of 
 - **Configurable Scenarios**: Easily define player names, roles, and which LLM they should use in `players.json`.
 - **Domain-Driven Design**: A clean separation between the Game Engine (domain logic), Agent Infrastructure, and the UI layer.
 - **Event-Driven Architecture**: The game state evolves through a series of discrete events, allowing for easy auditing and state reconstruction.
+
+![Game Simulation Screenshot](media/screenshot.png)
 
 ## 🚀 Setup
 
