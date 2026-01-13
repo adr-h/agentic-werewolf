@@ -3,6 +3,7 @@ from domain.Phase import VotingPhase
 from phases.discussion.commands import SendChatMessageCommand
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.ChatEvents import ChatSentEvent
+from domain.SystemEvents import SystemAnnouncementEvent
 
 class DiscussionDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -15,7 +16,7 @@ class DiscussionDriver:
         if hasattr(engine.state.phase, 'time_remaining'):
             initial_time = int(getattr(engine.state.phase, 'time_remaining'))
 
-        engine.broadcast("Sun rises. It is day. Discuss who you suspect...")
+        engine.apply(SystemAnnouncementEvent(message="Sun rises. It is day. Discuss who you suspect..."))
 
         import time
         timeout_duration = float(initial_time)
@@ -26,7 +27,6 @@ class DiscussionDriver:
         while True:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                engine.broadcast("Discussion ends.")
                 break
 
             try:
@@ -38,10 +38,7 @@ class DiscussionDriver:
                         for e in events:
                             engine.apply(e)
 
-                            if isinstance(e, ChatSentEvent):
-                                engine.broadcast(f"{e.sender_name} says: {e.message}")
                     case Timeout():
-                        engine.broadcast("Discussion ends.")
                         break
             except Exception:
                 if time.monotonic() >= deadline:

@@ -6,6 +6,7 @@ from domain.GameState import GameState
 from domain.Role import project_role_view
 from domain.ChatEvents import ChatSentEvent
 from domain.PhaseEvents import PhaseChangeEvent
+from domain.SystemEvents import SystemAnnouncementEvent
 from domain.Phase import VotingPhase, HuntingPhase, DiscussionPhase, GameOverPhase
 
 # Modular Projections
@@ -64,6 +65,8 @@ def project_game_view(state: GameState, viewer_id: str) -> GameView:
             rendered = event.flavor_text or f"Changing to {event.next_phase.__class__.__name__} phase"
         elif isinstance(event, ChatSentEvent):
             rendered = f"{event.sender_name}: {event.message}"
+        elif isinstance(event, SystemAnnouncementEvent):
+            rendered = event.message
 
         # Delegate to modular renderers if not handled centrally
         if not rendered:

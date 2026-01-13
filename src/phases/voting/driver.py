@@ -5,6 +5,7 @@ from domain.Phase import VotingPhase, HuntingPhase, GameOverPhase
 from domain.PhaseEvents import PhaseChangeEvent
 from phases.voting.handlers import handle_command
 from domain.ChatEvents import ChatSentEvent
+from domain.SystemEvents import SystemAnnouncementEvent
 
 class VotingDriver:
     async def run(self, engine: EngineProtocol) -> None:
@@ -12,21 +13,21 @@ class VotingDriver:
         Manages the Voting Phase loop.
         Ends when all alive players have voted OR timeout expires.
         """
-        engine.broadcast("Enough chit chat ... time to vote ...")
 
         import time
-        timeout_duration = 30.0
+        timeout_duration = 40.0
         deadline = time.monotonic() + timeout_duration
+
+        engine.apply(SystemAnnouncementEvent(message=f"You have {timeout_duration} seconds to vote ... make your time count."))
 
         while True:
             # Check Exit Condition A: All alive players voted
             if self._all_living_players_voted(engine.state):
-                engine.broadcast("All votes cast. Tallying results...")
+                engine.apply(SystemAnnouncementEvent(message="All votes cast. Tallying results..."))
                 break
 
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                engine.broadcast("Time is up!")
                 break
 
             # Wait for input
@@ -40,16 +41,14 @@ class VotingDriver:
                         for e in events:
                             engine.apply(e)
 
-                            if isinstance(e, ChatSentEvent):
-                                engine.broadcast(f"{e.sender_name} says: {e.message}")
-
                     case Timeout():
-                        engine.broadcast("Time is up!")
                         break
 
             except Exception as e:
                 if time.monotonic() >= deadline:
                     break
+
+        engine.apply(SystemAnnouncementEvent(message="Time is up!"))
 
         # Resolution
         from phases.voting.events import VoteExecutionEvent
@@ -57,10 +56,10 @@ class VotingDriver:
         if voted_id:
             victim = next((c for c in engine.state.characters if c.id == voted_id), None)
             victim_name = victim.name if victim else voted_id
-            engine.broadcast(f"The village has spoken. {victim_name} will be executed.")
+            engine.apply(SystemAnnouncementEvent(message=f"The village has spoken. {victim_name} received the most votes."))
             engine.apply(VoteExecutionEvent(target_id=voted_id, target_name=victim_name))
         else:
-            engine.broadcast("No valid target found or tie. No one will be executed.")
+            engine.apply(SystemAnnouncementEvent(message="No valid target found or tie. No one will be executed."))
 
         # Transition
         # Go to Night Hunting

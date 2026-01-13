@@ -6,6 +6,7 @@ from engine.win_condition import get_win_result
 from domain.Engine import EngineProtocol, UserInput, Timeout
 from domain.GameState import GameState
 from domain.PhaseEvents import PhaseChangeEvent
+from domain.SystemEvents import SystemAnnouncementEvent
 from phases.hunting.handlers import handle_command
 
 class HuntingDriver:
@@ -14,17 +15,16 @@ class HuntingDriver:
         Manages the Night/Hunting Phase.
         Resolves when timeout expires.
         """
-        engine.broadcast("Night falls. The village sleeps. Special roles, wake up.")
-
         import time
         # Night is strictly timer based for now (to avoid metagaming by timing analysis)
         timeout_duration = 30.0
         deadline = time.monotonic() + timeout_duration
 
+        engine.apply(SystemAnnouncementEvent(message=f"Night falls. The village sleeps. Special roles, wake up. You have {timeout_duration} seconds to take action."))
+
         while True:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                engine.broadcast("The sun is rising...")
                 break
 
             try:
@@ -37,7 +37,6 @@ class HuntingDriver:
                             engine.apply(e)
 
                     case Timeout():
-                        engine.broadcast("The sun is rising...")
                         break
 
             except Exception:
@@ -55,9 +54,9 @@ class HuntingDriver:
         # Go to Day Discussion
         winner = get_win_result(engine.state)
         if winner != "no_winners_yet":
-            engine.apply(PhaseChangeEvent(next_phase=GameOverPhase(winner=winner), flavor_text=f"Game Over! The winner is: {winner}"))
+            engine.apply(PhaseChangeEvent(next_phase=GameOverPhase(winner=winner), flavor_text=f"Game Over!"))
         else:
-            engine.apply(PhaseChangeEvent(next_phase=DiscussionPhase(), flavor_text="The sun rises. It is day. Discuss who you suspect..."))
+            engine.apply(PhaseChangeEvent(next_phase=DiscussionPhase(), flavor_text="Night is breaking..."))
 
     def _resolve_hunting(self, state: GameState):
         phase = state.phase
