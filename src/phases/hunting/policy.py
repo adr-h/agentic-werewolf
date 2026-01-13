@@ -22,6 +22,8 @@ def get_available_commands(state: GameState, character_id: str) -> List[Type[Com
     elif isinstance(character.role, BodyguardRole):
         commands.append(ProtectCommand)
     elif isinstance(character.role, DetectiveRole):
-        commands.append(InvestigateCommand)
+        # Only allow investigation once per phase
+        if character_id not in state.phase.pending_investigations:
+            commands.append(InvestigateCommand)
 
     return commands

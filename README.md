@@ -6,7 +6,7 @@ An autonomous, agent-driven simulation of the classic social deduction game **We
 
 ## 🐺 Overview
 
-In this simulation, multiple AI agents take on roles like **Werewolf**, **Villager**, **Doctor**, **Detective**, and **Bodyguard**. The game progresses through cycles of Day (Discussion and Voting) and Night (Hidden Actions). Players use LLMs to make decisions based on their role's objectives, their private knowledge, and the public event history.
+In this simulation, multiple AI agents take on roles like **Werewolf**, **Villager**, **Doctor**, **Detective**, and **Bodyguard**. The game progresses through cycles of Day (Discussion and Voting) and Night (Werewolf Hunts). Players use LLMs to make decisions based on their role's objectives, their private knowledge, and the public event history.
 
 Note: A significant portion of this codebase was crafted with the assistance of Antigravity. This project serves as both a fun demonstration of emergent social behaviour in agentic software (just look at those werewolves go), and the rapid prototyping capabilities of agentic software development.
 

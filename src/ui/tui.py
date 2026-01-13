@@ -134,7 +134,7 @@ class WerewolfTUI(App):
                 yield Label("Event History", classes="history_title")
                 yield HistoryList(id="event_history")
             with Vertical(classes="history_container"):
-                yield Label("Command History", classes="history_title")
+                yield Label("Decision History", classes="history_title")
                 yield HistoryList(id="command_history")
 
         yield Footer()
