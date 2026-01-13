@@ -17,6 +17,6 @@
    {
       "name": "David",
       "role": "Villager",
-      "model": "qwen/qwen3-32b"
+      "model": "anthropic/claude-opus-4.5"
    }
 ]
